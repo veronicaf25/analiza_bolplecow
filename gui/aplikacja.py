@@ -44,7 +44,7 @@ etykieta_grupa.pack(side="left", padx=(15, 5)) # Dodajemy większy odstęp z lew
 
 wybor_grupy = ttk.Combobox(
     ramka_gorna,
-    values=["Wszyscy", "Praca siedząca", "Praca niesiedząca"],
+    values=["Wszyscy", "Ćwiczą regularnie", "Nie ćwiczą"],
     state="readonly"
 )
 wybor_grupy.pack(side="left", padx=5)
@@ -52,13 +52,12 @@ wybor_grupy.current(0)
 
 # 1. Najpierw definiujemy funkcję eksportu:
 def eksportuj_dane():
-    grupa = wybor_grupy.get()
-    if grupa == "Praca siedząca":
-        dane_eksport = df[df['Grupa'] == 'A']
-    elif grupa == "Praca niesiedząca":
-        dane_eksport = df[df['Grupa'] == 'B']
+    if grupa == "Ćwiczą regularnie":
+        dane_f = df[df['Regularne_cwiczenia'] == 'Tak']
+    elif grupa == "Nie ćwiczą":
+        dane_f = df[df['Regularne_cwiczenia'] == 'Nie']
     else:
-        dane_eksport = df
+        dane_f = df
 
     dane_eksport.to_csv("raport_z_analizy.csv", index=False)
     etykieta_status.config(text="Status: Wyeksportowano dane do pliku CSV!")
@@ -80,10 +79,10 @@ def rysuj_wykres():
         grupa = wybor_grupy.get()
 
         # Filtrowanie danych dla pracy siedzącej (A) i niesiedzącej (B)
-        if grupa == "Praca siedząca":
-            dane_f = df[df['Grupa'] == 'A']  # Praca siedząca
-        elif grupa == "Praca niesiedząca":
-            dane_f = df[df['Grupa'] == 'B']  # Praca niesiedząca
+        if grupa == "Ćwiczą regularnie":
+            dane_f = df[df['Regularne_cwiczenia'] == 'Tak']
+        elif grupa == "Nie ćwiczą":
+            dane_f = df[df['Regularne_cwiczenia'] == 'Nie']
         else:
             dane_f = df
 
@@ -120,10 +119,10 @@ def rysuj_wykres():
             ax.set_xlabel("Wiek pacjenta")
             ax.set_ylabel("Skala bólu (1-10)")
         elif typ == "Średnia wg grupy":
-            srednie = df.groupby('Grupa')['Skala_Bolu_1_10'].mean() if 'Grupa' in df.columns else pd.Series()
+            srednie = df.groupby('Regularne_cwiczenia')['Skala_Bolu_1_10'].mean()
             srednie.plot(kind='bar', ax=ax, color=['#3498db', '#e74c3c'], edgecolor='black', rot=0)
-            ax.set_title("Średni poziom bólu: Siedząca vs Niesiedząca")
-            ax.set_xlabel("Grupa pracy")
+            ax.set_title("Średni poziom bólu: Ćwiczący vs Niećwiczący")
+            ax.set_xlabel("Regularne ćwiczenia")
             ax.set_ylabel("Średnia skala bólu")
         else:
             ax.text(0.5, 0.5, "Wybierz poprawny wykres", horizontalalignment='center', verticalalignment='center')
