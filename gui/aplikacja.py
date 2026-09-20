@@ -85,6 +85,14 @@ def rysuj_wykres():
     else:
         dane_f = df  # Wszyscy pacjenci
 
+        # Obliczenie podstawowych statystyk dla przefiltrowanych danych
+        liczba_pacjentow = len(dane_f)
+        sredni_wiek = dane_f['Wiek'].mean() if liczba_pacjentow > 0 else 0
+
+        # Aktualizacja tekstów w dolnym panelu statystyk
+        etykieta_liczba_pacjentow.config(text=f"Liczba pacjentów: {liczba_pacjentow}")
+        etykieta_sredni_wiek.config(text=f"Średni wiek: {sredni_wiek:.1f}")
+
     # Wyczyszczenie poprzedniego wykresu z osi
     ax.clear()
 
