@@ -64,6 +64,13 @@ canvas.get_tk_widget().pack(fill="both", expand=True)
 ramka_dolna = ttk.LabelFrame(okno, text="Podsumowanie statystyczne", padding="10")
 ramka_dolna.pack(fill="x", padx=10, pady=10)
 
+# Etykiety tekstowe w dolnej ramce do wyświetlania dynamicznych statystyk
+etykieta_liczba_pacjentow = ttk.Label(ramka_dolna, text="Liczba pacjentów: -", font=("Arial", 10, "bold"))
+etykieta_liczba_pacjentow.pack(side="left", padx=15)
+
+etykieta_sredni_wiek = ttk.Label(ramka_dolna, text="Średni wiek: -", font=("Arial", 10))
+etykieta_sredni_wiek.pack(side="left", padx=15)
+
 # Funkcja odpowiedzialna za generowanie wykresów na podstawie filtrów
 def rysuj_wykres():
     # Pobranie wybranej opcji z list rozwijanych
