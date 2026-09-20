@@ -196,3 +196,11 @@ przycisk_aktualizuj.config(command=rysuj_wykres)
 
 # Wywołanie funkcji rysującej od razu przy starcie aplikacji
 rysuj_wykres()
+
+# Funkcja do bezpiecznego zamknięcia aplikacji
+def zamknij_aplikacje():
+    print("Zamykanie aplikacji...")
+    okno.destroy()
+
+# Przypisanie funkcji do zdarzenia zamknięcia okna (krzyżyk X)
+okno.protocol("WM_DELETE_WINDOW", zamknij_aplikacje)
