@@ -44,22 +44,18 @@ etykieta_grupa.pack(side="left", padx=(15, 5)) # Dodajemy większy odstęp z lew
 
 wybor_grupy = ttk.Combobox(
     ramka_gorna,
-    values=["Wszyscy", "Praca siedząca", "Praca niesiedząca"],
+    values=["Wszyscy", "Praca siedząca", "Praca niesiedziąca"],
     state="readonly"
 )
 wybor_grupy.pack(side="left", padx=5)
 wybor_grupy.current(0)
 
-# Przycisk wyzwalający aktualizację i rysowanie wykresu
-przycisk_aktualizuj = ttk.Button(ramka_gorna, text="Generuj wykres")
-przycisk_aktualizuj.pack(side="left", padx=10)
-
 # 1. Najpierw definiujemy funkcję eksportu:
 def eksportuj_dane():
     grupa = wybor_grupy.get()
-    if grupa == "Grupa A":
+    if grupa == "Praca siedząca":
         dane_eksport = df[df['Grupa'] == 'A']
-    elif grupa == "Grupa B":
+    elif grupa == "Praca niesiedząca":
         dane_eksport = df[df['Grupa'] == 'B']
     else:
         dane_eksport = df
@@ -79,92 +75,17 @@ def pokaz_informacje():
     etykieta_status.config(text="Status: Wyświetlono informacje o programie")
 
 
-# 2.Tworzymy przycisk, który z niej korzysta:
-przycisk_eksport = ttk.Button(ramka_gorna, text="Eksportuj CSV", command=eksportuj_dane)
-przycisk_eksport.pack(side="left", padx=5)
-
-# Przycisk wyzwalający aktualizację i rysowanie wykresu
-przycisk_aktualizuj = ttk.Button(ramka_gorna, text="Generuj wykres")
-przycisk_aktualizuj.pack(side="left", padx=10)
-
-# Przycisk eksportu CSV
-przycisk_eksport = ttk.Button(ramka_gorna, text="Eksportuj CSV", command=eksportuj_dane)
-przycisk_eksport.pack(side="left", padx=5)
-
-# Przycisk resetowania filtrów
-przycisk_reset = ttk.Button(ramka_gorna, text="Resetuj filtry", command=resetuj_filtry)
-przycisk_reset.pack(side="left", padx=5)
-
-# Przycisk wyświetlający okno informacyjne
-przycisk_info = ttk.Button(ramka_gorna, text="O programie", command=pokaz_informacje)
-przycisk_info.pack(side="left", padx=5)
-
-# Ramka kontenerowa na wykres/tabelę w środkowej części okna
-ramka_srodek = ttk.Frame(okno, padding="10")
-ramka_srodek.pack(fill="both", expand=True, padx=10, pady=5)
-
-# Inicjalizacja figury i osi wykresu biblioteki Matplotlib
-fig, ax = plt.subplots(figsize=(6, 4), dpi=100)
-
-# Osadzenie płótna wykresu Matplotlib w środkowej ramce aplikacji
-canvas = FigureCanvasTkAgg(fig, master=ramka_srodek)
-canvas.get_tk_widget().pack(fill="both", expand=True)
-
-# Stworzenie dolnej ramki na podsumowanie statystyczne
-ramka_dolna = ttk.LabelFrame(okno, text="Podsumowanie statystyczne", padding="10")
-ramka_dolna.pack(fill="x", padx=10, pady=10)
-
-# Etykieta statusu informująca o bieżących operacjach w dolnej ramce
-etykieta_status = ttk.Label(ramka_dolna, text="Status: Gotowy do pracy", font=("Arial", 9, "italic"))
-etykieta_status.pack(side="right", padx=15)
-
-# Etykiety tekstowe w dolnej ramce do wyświetlania dynamicznych statystyk
-etykieta_liczba_pacjentow = ttk.Label(ramka_dolna, text="Liczba pacjentów: -", font=("Arial", 10, "bold"))
-etykieta_liczba_pacjentow.pack(side="left", padx=15)
-
-etykieta_sredni_wiek = ttk.Label(ramka_dolna, text="Średni wiek: -", font=("Arial", 10))
-etykieta_sredni_wiek.pack(side="left", padx=15)
-
-
-# Funkcja eksportująca aktualnie przefiltrowane dane do pliku raportu
-def eksportuj_dane():
-    # Pobieramy aktualną grupę i filtrujemy dane tak samo jak w wykresie
-    grupa = wybor_grupy.get()
-    if grupa == "Grupa A":
-        dane_eksport = df[df['Grupa'] == 'A']
-    elif grupa == "Grupa B":
-        dane_eksport = df[df['Grupa'] == 'B']
-    else:
-        dane_eksport = df
-
-    # Zapis do pliku CSV
-    dane_eksport.to_csv("raport_z_analizy.csv", index=False)
-    print("Zapisano dane do pliku raport_z_analizy.csv!")
-# Funkcja resetująca filtry do wartości domyślnych
-def resetuj_filtry():
-    wybor_wykresu.current(0)
-    wybor_grupy.current(0)
-    rysuj_wykres()
-    etykieta_status.config(text="Status: Zresetowano filtry")
-
-# Funkcja wyświetlająca okno dialogowe z informacjami o aplikacji
-def pokaz_informacje():
-    messagebox.showinfo("O programie", "Aplikacja do analizy danych pacjentów z bólem pleców.\nProjekt inżynierski / zaliczeniowy.")
-    etykieta_status.config(text="Status: Wyświetlono informacje o programie")
-
-# Funkcja odpowiedzialna za generowanie wykresów na podstawie filtrów
-    # Funkcja odpowiedzialna za generowanie wykresów na podstawie filtrów
-    def rysuj_wykres():
+def rysuj_wykres():
         typ = wybor_wykresu.get()
         grupa = wybor_grupy.get()
 
         # Filtrowanie danych dla pracy siedzącej (A) i niesiedzącej (B)
-        if grupa == "Grupa A":
+        if grupa == "Praca siedząca":
             dane_f = df[df['Grupa'] == 'A']  # Praca siedząca
-        elif grupa == "Grupa B":
+        elif grupa == "Praca niesiedząca":
             dane_f = df[df['Grupa'] == 'B']  # Praca niesiedząca
         else:
-            dane_f = df  # Wszyscy pacjenci
+            dane_f = df
 
         liczba_pacjentow = len(dane_f)
         sredni_wiek = dane_f['Wiek'].mean() if liczba_pacjentow > 0 else 0
@@ -201,122 +122,39 @@ def pokaz_informacje():
 
         canvas.draw()
 
-    przycisk_aktualizuj.config(command=rysuj_wykres)
-    rysuj_wykres()
+# Ramka na wykres w środkowej części okna
+ramka_srodek = ttk.Frame(okno, padding="10")
+ramka_srodek.pack(fill="both", expand=True, padx=10, pady=5)
 
-    def zamknij_aplikacje():
+fig, ax = plt.subplots(figsize=(6, 4), dpi=100)
+canvas = FigureCanvasTkAgg(fig, master=ramka_srodek)
+canvas.get_tk_widget().pack(fill="both", expand=True)
+
+# Dolna ramka na statystyki
+ramka_dolna = ttk.LabelFrame(okno, text="Podsumowanie statystyczne", padding="10")
+ramka_dolna.pack(fill="x", padx=10, pady=10)
+
+etykieta_status = ttk.Label(ramka_dolna, text="Status: Gotowy do pracy", font=("Arial", 9, "italic"))
+etykieta_status.pack(side="right", padx=15)
+
+etykieta_liczba_pacjentow = ttk.Label(ramka_dolna, text="Liczba pacjentów: -", font=("Arial", 10, "bold"))
+etykieta_liczba_pacjentow.pack(side="left", padx=15)
+
+etykieta_sredni_wiek = ttk.Label(ramka_dolna, text="Średni wiek: -", font=("Arial", 10))
+etykieta_sredni_wiek.pack(side="left", padx=15)
+
+
+przycisk_aktualizuj = ttk.Button(ramka_gorna, text="Generuj wykres")
+przycisk_aktualizuj.pack(side="left", padx=10)
+
+
+przycisk_aktualizuj.config(command=rysuj_wykres)
+rysuj_wykres()
+
+def zamknij_aplikacje():
         print("Zamykanie aplikacji...")
         okno.destroy()
 
-    okno.protocol("WM_DELETE_WINDOW", zamknij_aplikacje)
-    okno.mainloop()
-
-    # Obliczenie podstawowych statystyk dla przefiltrowanych danych
-    liczba_pacjentow = len(dane_f)
-    sredni_wiek = dane_f['Wiek'].mean() if liczba_pacjentow > 0 else 0
-
-    # Aktualizacja tekstów w dolnym panelu statystyk
-    etykieta_liczba_pacjentow.config(text=f"Liczba pacjentów: {liczba_pacjentow}")
-    etykieta_sredni_wiek.config(text=f"Średni wiek: {sredni_wiek:.1f}")
-
-    # Wyczyszczenie poprzedniego wykresu z osi
-    ax.clear()
-
-    # Generowanie odpowiedniego wykresu w zależności od wyboru
-    if typ == "Wiek a ból":
-        ax.scatter(dane_f['Wiek'], dane_f['ć'], color='purple', alpha=0.7)
-        ax.set_title("Zależność wieku od poziomu bólu")
-        ax.set_xlabel("Wiek pacjenta")
-        ax.set_ylabel("Skala bólu")
-    elif typ == "Rozkład bólów":
-        ax.hist(dane_f['Skala_Bolu_1_10'], bins=8, color='teal', edgecolor='black')
-        ax.set_title("Rozkład poziomu bólu")
-        ax.set_xlabel("Skala bólu")
-        ax.set_ylabel("Liczba pacjentów")
-        ax.set_title("Rozkład poziomu bólu")
-        ax.set_xlabel("Skala bólu")
-        ax.set_ylabel("Liczba pacjentów")
-    elif typ == "Korelacja cech":
-        # Wykres słupkowy lub punktowy pokazujący np. zależność między dwoma parametrycznymi cechami
-        ax.scatter(dane_f['Wiek'], dane_f['Bol_Plecow'], c=dane_f['Bol_Plecow'], cmap='viridis', alpha=0.8)
-        ax.set_title("Korelacja cech pacjentów")
-        ax.set_xlabel("Wiek")
-        ax.set_ylabel("Poziom bólu")
-    elif typ == "Średnia wg grupy":
-        # Przykład analizy grupowanej
-        srednie = df.groupby('Grupa')['Bol_Plecow'].mean()
-        srednie.plot(kind='bar', ax=ax, color=['#3498db', '#e74c3c'], edgecolor='black')
-        ax.set_title("Średni poziom bólu w grupach")
-        ax.set_xlabel("Grupa")
-        ax.set_ylabel("Średni ból")
-    else:
-        # Wykres domyślny zabezpieczający
-        ax.text(0.5, 0.5, "Wybierz poprawny wykres", horizontalalignment='center', verticalalignment='center')
-
-
-    # Odświeżenie płótna, aby nowy wykres wyświetlił się w oknie
-    canvas.draw()
-
-# Powiązanie przycisku z funkcją rysującą
-# Funkcja odpowiedzialna za generowanie wykresów na podstawie filtrów
-def rysuj_wykres():
-    typ = wybor_wykresu.get()
-    grupa = wybor_grupy.get()
-
-    if grupa == "Grupa A":
-        dane_f = df[df['Grupa'] == 'A']
-    elif grupa == "Grupa B":
-        dane_f = df[df['Grupa'] == 'B']
-    else:
-        dane_f = df
-
-    liczba_pacjentow = len(dane_f)
-    sredni_wiek = dane_f['Wiek'].mean() if liczba_pacjentow > 0 else 0
-
-    etykieta_liczba_pacjentow.config(text=f"Liczba pacjentów: {liczba_pacjentow}")
-    etykieta_sredni_wiek.config(text=f"Średni wiek: {sredni_wiek:.1f}")
-
-    ax.clear()
-
-    if typ == "Wiek a ból":
-        ax.scatter(dane_f['Wiek'], dane_f['Skala_Bolu_1_10'], color='purple', alpha=0.7)
-        ax.set_title("Zależność wieku od poziomu bólu")
-        ax.set_xlabel("Wiek pacjenta")
-        ax.set_ylabel("Skala bólu")
-    elif typ == "Rozkład bólów":
-        ax.hist(dane_f['Skala_Bolu_1_10'], bins=8, color='teal', edgecolor='black')
-        ax.set_title("Rozkład poziomu bólu")
-        ax.set_xlabel("Skala bólu")
-        ax.set_ylabel("Liczba pacjentów")
-    elif typ == "Korelacja cech":
-        ax.scatter(dane_f['Wiek'], dane_f['Skala_Bolu_1_10'], c=dane_f['Skala_Bolu_1_10'], cmap='viridis', alpha=0.8)
-        ax.set_title("Korelacja cech pacjentów")
-        ax.set_xlabel("Wiek")
-        ax.set_ylabel("Poziom bólu")
-    elif typ == "Średnia wg grupy":
-        srednie = df.groupby('Grupa')['Skala_Bolu_1_10'].mean()
-        srednie.plot(kind='bar', ax=ax, color=['#3498db', '#e74c3c'], edgecolor='black')
-        ax.set_title("Średni poziom bólu w grupach")
-        ax.set_xlabel("Grupa")
-        ax.set_ylabel("Średni ból")
-    else:
-        ax.text(0.5, 0.5, "Wybierz poprawny wykres", horizontalalignment='center', verticalalignment='center')
-
-    canvas.draw()
-
-# Powiązanie przycisku z funkcją rysującą
-przycisk_aktualizuj.config(command=rysuj_wykres)
-
-# Wywołanie funkcji rysującej od razu przy starcie aplikacji
-rysuj_wykres()
-
-# Funkcja do bezpiecznego zamknięcia aplikacji
-def zamknij_aplikacje():
-    print("Zamykanie aplikacji...")
-    okno.destroy()
-
-# Przypisanie funkcji do zdarzenia zamknięcia okna (krzyżyk X)
 okno.protocol("WM_DELETE_WINDOW", zamknij_aplikacje)
-
-# Główna pętla programu
 okno.mainloop()
+
