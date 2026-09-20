@@ -56,3 +56,6 @@ ramka_srodek.pack(fill="both", expand=True, padx=10, pady=5)
 # Inicjalizacja figury i osi wykresu biblioteki Matplotlib
 fig, ax = plt.subplots(figsize=(6, 4), dpi=100)
 
+# Osadzenie płótna wykresu Matplotlib w środkowej ramce aplikacji
+canvas = FigureCanvasTkAgg(fig, master=ramka_srodek)
+canvas.get_tk_widget().pack(fill="both", expand=True)
