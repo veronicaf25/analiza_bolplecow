@@ -8,5 +8,5 @@ from matplotlib.backendImport FigureCanvasTkAgg do osadzania wyks.backend_tkagg 
 
 # Stworzenie głównego okna aplikacji
 okno = tk.Tk()
-okno.title("Projekt 2 - Analiza pacjentów (Weronika)")
+okno.title("Analiza pacjentów z bólem pleców")
 okno.geometry("900x750")
