@@ -49,6 +49,10 @@ wybor_grupy.current(0)
 przycisk_aktualizuj = ttk.Button(ramka_gorna, text="Generuj wykres")
 przycisk_aktualizuj.pack(side="left", padx=10)
 
+# Przycisk wyzwalający eksport danych
+przycisk_eksport = ttk.Button(ramka_gorna, text="Eksportuj CSV", command=eksportuj_dane)
+przycisk_eksport.pack(side="left", padx=5)
+
 # Ramka kontenerowa na wykres/tabelę w środkowej części okna
 ramka_srodek = ttk.Frame(okno, padding="10")
 ramka_srodek.pack(fill="both", expand=True, padx=10, pady=5)
@@ -70,6 +74,22 @@ etykieta_liczba_pacjentow.pack(side="left", padx=15)
 
 etykieta_sredni_wiek = ttk.Label(ramka_dolna, text="Średni wiek: -", font=("Arial", 10))
 etykieta_sredni_wiek.pack(side="left", padx=15)
+
+
+# Funkcja eksportująca aktualnie przefiltrowane dane do pliku raportu
+def eksportuj_dane():
+    # Pobieramy aktualną grupę i filtrujemy dane tak samo jak w wykresie
+    grupa = wybor_grupy.get()
+    if grupa == "Grupa A":
+        dane_eksport = df[df['Grupa'] == 'A']
+    elif grupa == "Grupa B":
+        dane_eksport = df[df['Grupa'] == 'B']
+    else:
+        dane_eksport = df
+
+    # Zapis do pliku CSV
+    dane_eksport.to_csv("raport_z_analizy.csv", index=False)
+    print("Zapisano dane do pliku raport_z_analizy.csv!")
 
 # Funkcja odpowiedzialna za generowanie wykresów na podstawie filtrów
 def rysuj_wykres():
