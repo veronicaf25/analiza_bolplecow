@@ -39,3 +39,9 @@ wybor_grupy = ttk.Combobox(
 )
 wybor_grupy.pack(side="left", padx=5)
 wybor_grupy.current(0)
+
+# Wczytanie pliku z danymi pacjentów z zabezpieczeniem ścieżki
+try:
+    df = pd.read_csv('data/dane_pacjenci_bol_plecow.csv')
+except FileNotFoundError:
+    df = pd.read_csv('../data/dane_pacjenci_bol_plecow.csv')
