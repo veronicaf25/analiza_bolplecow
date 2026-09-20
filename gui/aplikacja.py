@@ -18,8 +18,8 @@ okno.title("Analiza pacjentów z bólem pleców")
 okno.geometry("900x750")
 
 # Konfiguracja nowoczesnego stylu interfejsu
- styl = ttk.Style()
- styl.theme_use('clam')  # Użycie nowoczesnego motywu
+styl = ttk.Style()
+styl.theme_use('clam')  # Użycie nowoczesnego motywu
 
 # Stworzenie głównej ramki na górne elementy sterujące (filtry)
 ramka_gorna = ttk.Frame(okno, padding="10")
@@ -68,11 +68,30 @@ def eksportuj_dane():
     etykieta_status.config(text="Status: Wyeksportowano dane do pliku CSV!")
     print("Zapisano dane do pliku raport_z_analizy.csv!")
 
-# 2. Dopiero potem tworzymy przycisk, który z niej korzysta:
+def resetuj_filtry():
+    wybor_wykresu.current(0)
+    wybor_grupy.current(0)
+    rysuj_wykres()
+    etykieta_status.config(text="Status: Zresetowano filtry")
+
+def pokaz_informacje():
+    messagebox.showinfo("O programie", "Aplikacja do analizy danych pacjentów z bólem pleców.\nProjekt inżynierski / zaliczeniowy.")
+    etykieta_status.config(text="Status: Wyświetlono informacje o programie")
+
+
+# 2.Tworzymy przycisk, który z niej korzysta:
 przycisk_eksport = ttk.Button(ramka_gorna, text="Eksportuj CSV", command=eksportuj_dane)
 przycisk_eksport.pack(side="left", padx=5)
 
-# Przycisk resetujący filtry
+# Przycisk wyzwalający aktualizację i rysowanie wykresu
+przycisk_aktualizuj = ttk.Button(ramka_gorna, text="Generuj wykres")
+przycisk_aktualizuj.pack(side="left", padx=10)
+
+# Przycisk eksportu CSV
+przycisk_eksport = ttk.Button(ramka_gorna, text="Eksportuj CSV", command=eksportuj_dane)
+przycisk_eksport.pack(side="left", padx=5)
+
+# Przycisk resetowania filtrów
 przycisk_reset = ttk.Button(ramka_gorna, text="Resetuj filtry", command=resetuj_filtry)
 przycisk_reset.pack(side="left", padx=5)
 
@@ -134,18 +153,61 @@ def pokaz_informacje():
     etykieta_status.config(text="Status: Wyświetlono informacje o programie")
 
 # Funkcja odpowiedzialna za generowanie wykresów na podstawie filtrów
-def rysuj_wykres():
-    # Pobranie wybranej opcji z list rozwijanych
-    typ = wybor_wykresu.get()
-    grupa = wybor_grupy.get()
+    def rysuj_wykres():
+        typ = wybor_wykresu.get()
+        grupa = wybor_grupy.get()
 
-    # Filtrowanie danych w zależności od wybranej grupy pacjentów
-    if grupa == "Grupa A":
-        dane_f = df[df['Grupa'] == 'A']
-    elif grupa == "Grupa B":
-        dane_f = df[df['Grupa'] == 'B']
-    else:
-        dane_f = df  # Wszyscy pacjenci
+        if grupa == "Grupa A":
+            dane_f = df[df['Grupa'] == 'A']
+        elif grupa == "Grupa B":
+            dane_f = df[df['Grupa'] == 'B']
+        else:
+            dane_f = df
+
+        liczba_pacjentow = len(dane_f)
+        sredni_wiek = dane_f['Wiek'].mean() if liczba_pacjentow > 0 else 0
+
+        etykieta_liczba_pacjentow.config(text=f"Liczba pacjentów: {liczba_pacjentow}")
+        etykieta_sredni_wiek.config(text=f"Średni wiek: {sredni_wiek:.1f}")
+
+        ax.clear()
+
+        if typ == "Wiek a ból":
+            ax.scatter(dane_f['Wiek'], dane_f['Skala_Bolu_1_10'], color='purple', alpha=0.7)
+            ax.set_title("Zależność wieku od poziomu bólu")
+            ax.set_xlabel("Wiek pacjenta")
+            ax.set_ylabel("Skala bólu")
+        elif typ == "Rozkład bólów":
+            ax.hist(dane_f['Skala_Bolu_1_10'], bins=8, color='teal', edgecolor='black')
+            ax.set_title("Rozkład poziomu bólu")
+            ax.set_xlabel("Skala bólu")
+            ax.set_ylabel("Liczba pacjentów")
+        elif typ == "Korelacja cech":
+            ax.scatter(dane_f['Wiek'], dane_f['Skala_Bolu_1_10'], c=dane_f['Skala_Bolu_1_10'], cmap='viridis',
+                       alpha=0.8)
+            ax.set_title("Korelacja cech pacjentów")
+            ax.set_xlabel("Wiek")
+            ax.set_ylabel("Poziom bólu")
+        elif typ == "Średnia wg grupy":
+            srednie = df.groupby('Grupa')['Skala_Bolu_1_10'].mean()
+            srednie.plot(kind='bar', ax=ax, color=['#3498db', '#e74c3c'], edgecolor='black')
+            ax.set_title("Średni poziom bólu w grupach")
+            ax.set_xlabel("Grupa")
+            ax.set_ylabel("Średni ból")
+        else:
+            ax.text(0.5, 0.5, "Wybierz poprawny wykres", horizontalalignment='center', verticalalignment='center')
+
+        canvas.draw()
+
+    przycisk_aktualizuj.config(command=rysuj_wykres)
+    rysuj_wykres()
+
+    def zamknij_aplikacje():
+        print("Zamykanie aplikacji...")
+        okno.destroy()
+
+    okno.protocol("WM_DELETE_WINDOW", zamknij_aplikacje)
+    okno.mainloop()
 
     # Obliczenie podstawowych statystyk dla przefiltrowanych danych
     liczba_pacjentow = len(dane_f)
@@ -160,12 +222,15 @@ def rysuj_wykres():
 
     # Generowanie odpowiedniego wykresu w zależności od wyboru
     if typ == "Wiek a ból":
-        ax.scatter(dane_f['Wiek'], dane_f['Bol_Plecow'], color='purple', alpha=0.7)
+        ax.scatter(dane_f['Wiek'], dane_f['ć'], color='purple', alpha=0.7)
         ax.set_title("Zależność wieku od poziomu bólu")
         ax.set_xlabel("Wiek pacjenta")
         ax.set_ylabel("Skala bólu")
     elif typ == "Rozkład bólów":
-        ax.hist(dane_f['Bol_Plecow'], bins=8, color='teal', edgecolor='black')
+        ax.hist(dane_f['Skala_Bolu_1_10'], bins=8, color='teal', edgecolor='black')
+        ax.set_title("Rozkład poziomu bólu")
+        ax.set_xlabel("Skala bólu")
+        ax.set_ylabel("Liczba pacjentów")
         ax.set_title("Rozkład poziomu bólu")
         ax.set_xlabel("Skala bólu")
         ax.set_ylabel("Liczba pacjentów")
@@ -190,6 +255,52 @@ def rysuj_wykres():
     # Odświeżenie płótna, aby nowy wykres wyświetlił się w oknie
     canvas.draw()
 
+# Powiązanie przycisku z funkcją rysującą
+# Funkcja odpowiedzialna za generowanie wykresów na podstawie filtrów
+def rysuj_wykres():
+    typ = wybor_wykresu.get()
+    grupa = wybor_grupy.get()
+
+    if grupa == "Grupa A":
+        dane_f = df[df['Grupa'] == 'A']
+    elif grupa == "Grupa B":
+        dane_f = df[df['Grupa'] == 'B']
+    else:
+        dane_f = df
+
+    liczba_pacjentow = len(dane_f)
+    sredni_wiek = dane_f['Wiek'].mean() if liczba_pacjentow > 0 else 0
+
+    etykieta_liczba_pacjentow.config(text=f"Liczba pacjentów: {liczba_pacjentow}")
+    etykieta_sredni_wiek.config(text=f"Średni wiek: {sredni_wiek:.1f}")
+
+    ax.clear()
+
+    if typ == "Wiek a ból":
+        ax.scatter(dane_f['Wiek'], dane_f['Skala_Bolu_1_10'], color='purple', alpha=0.7)
+        ax.set_title("Zależność wieku od poziomu bólu")
+        ax.set_xlabel("Wiek pacjenta")
+        ax.set_ylabel("Skala bólu")
+    elif typ == "Rozkład bólów":
+        ax.hist(dane_f['Skala_Bolu_1_10'], bins=8, color='teal', edgecolor='black')
+        ax.set_title("Rozkład poziomu bólu")
+        ax.set_xlabel("Skala bólu")
+        ax.set_ylabel("Liczba pacjentów")
+    elif typ == "Korelacja cech":
+        ax.scatter(dane_f['Wiek'], dane_f['Skala_Bolu_1_10'], c=dane_f['Skala_Bolu_1_10'], cmap='viridis', alpha=0.8)
+        ax.set_title("Korelacja cech pacjentów")
+        ax.set_xlabel("Wiek")
+        ax.set_ylabel("Poziom bólu")
+    elif typ == "Średnia wg grupy":
+        srednie = df.groupby('Grupa')['Skala_Bolu_1_10'].mean()
+        srednie.plot(kind='bar', ax=ax, color=['#3498db', '#e74c3c'], edgecolor='black')
+        ax.set_title("Średni poziom bólu w grupach")
+        ax.set_xlabel("Grupa")
+        ax.set_ylabel("Średni ból")
+    else:
+        ax.text(0.5, 0.5, "Wybierz poprawny wykres", horizontalalignment='center', verticalalignment='center')
+
+    canvas.draw()
 
 # Powiązanie przycisku z funkcją rysującą
 przycisk_aktualizuj.config(command=rysuj_wykres)
@@ -204,3 +315,6 @@ def zamknij_aplikacje():
 
 # Przypisanie funkcji do zdarzenia zamknięcia okna (krzyżyk X)
 okno.protocol("WM_DELETE_WINDOW", zamknij_aplikacje)
+
+# Główna pętla programu
+okno.mainloop()
