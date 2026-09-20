@@ -44,7 +44,7 @@ etykieta_grupa.pack(side="left", padx=(15, 5)) # Dodajemy większy odstęp z lew
 
 wybor_grupy = ttk.Combobox(
     ramka_gorna,
-    values=["Wszyscy", "Grupa A", "Grupa B"],
+    values=["Wszyscy", "Praca siedząca", "Praca niesiedząca"],
     state="readonly"
 )
 wybor_grupy.pack(side="left", padx=5)
@@ -153,16 +153,18 @@ def pokaz_informacje():
     etykieta_status.config(text="Status: Wyświetlono informacje o programie")
 
 # Funkcja odpowiedzialna za generowanie wykresów na podstawie filtrów
+    # Funkcja odpowiedzialna za generowanie wykresów na podstawie filtrów
     def rysuj_wykres():
         typ = wybor_wykresu.get()
         grupa = wybor_grupy.get()
 
+        # Filtrowanie danych dla pracy siedzącej (A) i niesiedzącej (B)
         if grupa == "Grupa A":
-            dane_f = df[df['Grupa'] == 'A']
+            dane_f = df[df['Grupa'] == 'A']  # Praca siedząca
         elif grupa == "Grupa B":
-            dane_f = df[df['Grupa'] == 'B']
+            dane_f = df[df['Grupa'] == 'B']  # Praca niesiedząca
         else:
-            dane_f = df
+            dane_f = df  # Wszyscy pacjenci
 
         liczba_pacjentow = len(dane_f)
         sredni_wiek = dane_f['Wiek'].mean() if liczba_pacjentow > 0 else 0
@@ -172,28 +174,28 @@ def pokaz_informacje():
 
         ax.clear()
 
+        # 4 różne typy wykresów zgodnie z wytycznymi
         if typ == "Wiek a ból":
-            ax.scatter(dane_f['Wiek'], dane_f['Skala_Bolu_1_10'], color='purple', alpha=0.7)
+            ax.scatter(dane_f['Wiek'], dane_f['Skala_Bolu_1_10'], color='purple', alpha=0.7, s=50)
             ax.set_title("Zależność wieku od poziomu bólu")
             ax.set_xlabel("Wiek pacjenta")
-            ax.set_ylabel("Skala bólu")
+            ax.set_ylabel("Skala bólu (1-10)")
         elif typ == "Rozkład bólów":
             ax.hist(dane_f['Skala_Bolu_1_10'], bins=8, color='teal', edgecolor='black')
             ax.set_title("Rozkład poziomu bólu")
             ax.set_xlabel("Skala bólu")
             ax.set_ylabel("Liczba pacjentów")
         elif typ == "Korelacja cech":
-            ax.scatter(dane_f['Wiek'], dane_f['Skala_Bolu_1_10'], c=dane_f['Skala_Bolu_1_10'], cmap='viridis',
-                       alpha=0.8)
-            ax.set_title("Korelacja cech pacjentów")
-            ax.set_xlabel("Wiek")
-            ax.set_ylabel("Poziom bólu")
+            dane_f.boxplot(column='Wiek', by='Skala_Bolu_1_10', ax=ax, grid=False)
+            ax.set_title("Rozkład wieku dla poziomów bólu")
+            ax.set_xlabel("Skala bólu")
+            ax.set_ylabel("Wiek")
         elif typ == "Średnia wg grupy":
-            srednie = df.groupby('Grupa')['Skala_Bolu_1_10'].mean()
-            srednie.plot(kind='bar', ax=ax, color=['#3498db', '#e74c3c'], edgecolor='black')
-            ax.set_title("Średni poziom bólu w grupach")
-            ax.set_xlabel("Grupa")
-            ax.set_ylabel("Średni ból")
+            srednie = dane_f.groupby('Grupa')['Skala_Bolu_1_10'].mean() if 'Grupa' in dane_f.columns else pd.Series()
+            srednie.plot(kind='bar', ax=ax, color=['#3498db', '#e74c3c'], edgecolor='black', rot=0)
+            ax.set_title("Średni poziom bólu: Siedząca (A) vs Niesiedząca (B)")
+            ax.set_xlabel("Grupa (A - siedząca, B - niesiedząca)")
+            ax.set_ylabel("Średnia skala bólu")
         else:
             ax.text(0.5, 0.5, "Wybierz poprawny wykres", horizontalalignment='center', verticalalignment='center')
 
