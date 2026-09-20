@@ -108,7 +108,7 @@ def rysuj_wykres():
         ax.set_xlabel("Skala bólu")
         ax.set_ylabel("Liczba pacjentów")
 
-        elif typ == "Korelacja cech":
+    elif typ == "Korelacja cech":
         # Wykres słupkowy lub punktowy pokazujący np. zależność między dwoma parametrycznymi cechami
         ax.scatter(dane_f['Wiek'], dane_f['Bol_Plecow'], c=dane_f['Bol_Plecow'], cmap='viridis', alpha=0.8)
         ax.set_title("Korelacja cech pacjentów")
