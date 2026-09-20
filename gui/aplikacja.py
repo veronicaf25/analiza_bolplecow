@@ -59,3 +59,46 @@ fig, ax = plt.subplots(figsize=(6, 4), dpi=100)
 # Osadzenie płótna wykresu Matplotlib w środkowej ramce aplikacji
 canvas = FigureCanvasTkAgg(fig, master=ramka_srodek)
 canvas.get_tk_widget().pack(fill="both", expand=True)
+
+
+# Funkcja odpowiedzialna za generowanie wykresów na podstawie filtrów
+def rysuj_wykres():
+    # Pobranie wybranej opcji z list rozwijanych
+    typ = wybor_wykresu.get()
+    grupa = wybor_grupy.get()
+
+    # Filtrowanie danych w zależności od wybranej grupy pacjentów
+    if grupa == "Grupa A":
+        dane_f = df[df['Grupa'] == 'A']
+    elif grupa == "Grupa B":
+        dane_f = df[df['Grupa'] == 'B']
+    else:
+        dane_f = df  # Wszyscy pacjenci
+
+    # Wyczyszczenie poprzedniego wykresu z osi
+    ax.clear()
+
+    # Generowanie odpowiedniego wykresu w zależności od wyboru
+    if typ == "Wiek a ból":
+        ax.scatter(dane_f['Wiek'], dane_f['Bol_Plecow'], color='purple', alpha=0.7)
+        ax.set_title("Zależność wieku od poziomu bólu")
+        ax.set_xlabel("Wiek pacjenta")
+        ax.set_ylabel("Skala bólu")
+    elif typ == "Rozkład bólów":
+        ax.hist(dane_f['Bol_Plecow'], bins=8, color='teal', edgecolor='black')
+        ax.set_title("Rozkład poziomu bólu")
+        ax.set_xlabel("Skala bólu")
+        ax.set_ylabel("Liczba pacjentów")
+    else:
+        # Wykres domyślny dla pozostałych opcji
+        ax.plot([1, 2, 3, 4], [10, 20, 15, 25], marker='o', color='orange')
+        ax.set_title(f"Analiza: {typ}")
+        ax.set_xlabel("Kategoria")
+        ax.set_ylabel("Wartość")
+
+    # Odświeżenie płótna, aby nowy wykres wyświetlił się w oknie
+    canvas.draw()
+
+
+# Powiązanie przycisku z funkcją rysującą
+przycisk_aktualizuj.config(command=rysuj_wykres)
