@@ -40,6 +40,10 @@ wybor_grupy = ttk.Combobox(
 wybor_grupy.pack(side="left", padx=5)
 wybor_grupy.current(0)
 
+# Przycisk wyzwalający aktualizację i rysowanie wykresu
+przycisk_aktualizuj = ttk.Button(ramka_gorna, text="Generuj wykres")
+przycisk_aktualizuj.pack(side="left", padx=10)
+
 # Wczytanie pliku z danymi pacjentów z zabezpieczeniem ścieżki
 try:
     df = pd.read_csv('data/dane_pacjenci_bol_plecow.csv')
