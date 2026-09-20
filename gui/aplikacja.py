@@ -68,6 +68,10 @@ canvas.get_tk_widget().pack(fill="both", expand=True)
 ramka_dolna = ttk.LabelFrame(okno, text="Podsumowanie statystyczne", padding="10")
 ramka_dolna.pack(fill="x", padx=10, pady=10)
 
+# Etykieta statusu informująca o bieżących operacjach w dolnej ramce
+etykieta_status = ttk.Label(ramka_dolna, text="Status: Gotowy do pracy", font=("Arial", 9, "italic"))
+etykieta_status.pack(side="right", padx=15)
+
 # Etykiety tekstowe w dolnej ramce do wyświetlania dynamicznych statystyk
 etykieta_liczba_pacjentow = ttk.Label(ramka_dolna, text="Liczba pacjentów: -", font=("Arial", 10, "bold"))
 etykieta_liczba_pacjentow.pack(side="left", padx=15)
