@@ -27,3 +27,15 @@ wybor_wykresu = ttk.Combobox(
 )
 wybor_wykresu.pack(side="left", padx=5)
 wybor_wykresu.current(0) # Ustawienie domyślnego wyboru na pierwszy element
+
+# Etykieta i lista rozwijana do filtrowania danych pacjentów
+etykieta_grupa = ttk.Label(ramka_gorna, text="Grupa pacjentów:")
+etykieta_grupa.pack(side="left", padx=(15, 5)) # Dodajemy większy odstęp z lewej strony (15px), żeby oddzielić filtry
+
+wybor_grupy = ttk.Combobox(
+    ramka_gorna,
+    values=["Wszyscy", "Grupa A", "Grupa B"],
+    state="readonly"
+)
+wybor_grupy.pack(side="left", padx=5)
+wybor_grupy.current(0)
