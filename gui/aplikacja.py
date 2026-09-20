@@ -60,6 +60,9 @@ fig, ax = plt.subplots(figsize=(6, 4), dpi=100)
 canvas = FigureCanvasTkAgg(fig, master=ramka_srodek)
 canvas.get_tk_widget().pack(fill="both", expand=True)
 
+# Stworzenie dolnej ramki na podsumowanie statystyczne
+ramka_dolna = ttk.LabelFrame(okno, text="Podsumowanie statystyczne", padding="10")
+ramka_dolna.pack(fill="x", padx=10, pady=10)
 
 # Funkcja odpowiedzialna za generowanie wykresów na podstawie filtrów
 def rysuj_wykres():
