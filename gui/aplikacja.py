@@ -30,25 +30,31 @@ etykieta_wykres = ttk.Label(ramka_gorna, text="Wybierz typ wykresu:")
 etykieta_wykres.pack(side="left", padx=5)
 
 # Lista rozwijana do wyboru typu wykresu
-wybor_wykresu = ttk.Combobox(
+wybor_grupy = ttk.Combobox(
     ramka_gorna,
     values=["Wiek a ból", "Rozkład poziomu bólu", "Korelacja cech", "Średnia wg grupy"],
     state="readonly"
 )
-wybor_wykresu.pack(side="left", padx=5)
-wybor_wykresu.current(0) # Ustawienie domyślnego wyboru na pierwszy element
+
+wybor_grupy.set("Wszyscy")
+wybor_grupy.pack(side="left", padx=5)
 
 # Etykieta i lista rozwijana do filtrowania danych pacjentów
-etykieta_grupa = ttk.Label(ramka_gorna, text="Grupa pacjentów:")
+etykieta_grupa = ttk.Label(ramka_gorna, text="Lokalizacja:")
 etykieta_grupa.pack(side="left", padx=(15, 5)) # Dodajemy większy odstęp z lewej strony (15px), żeby oddzielić filtry
 
+# Lista rozwijana do filtrowania po odcinku kręgosłupa
+# 1. Tworzenie listy rozwijanej
 wybor_grupy = ttk.Combobox(
     ramka_gorna,
-    values=["Wszyscy", "Ćwiczą regularnie", "Nie ćwiczą"],
+    values=["Wszyscy", "szyjny", "piersiowy", "lędźwiowy"],
     state="readonly"
 )
-wybor_grupy.pack(side="left", padx=5)
-wybor_grupy.current(0)
+
+
+wybor_grupy.set("Wszyscy")  # Domyślny wybór przy starcie
+wybor_grupy.pack(side="left", padx=5)  # Umieszcza element w oknie (lub użyj .grid(), jeśli tak układasz resztę)
+
 
 # 1. Najpierw definiujemy funkcję eksportu:
 def eksportuj_dane():
@@ -78,13 +84,15 @@ def rysuj_wykres():
         typ = wybor_wykresu.get()
         grupa = wybor_grupy.get()
 
-        # Filtrowanie danych dla pracy siedzącej (A) i niesiedzącej (B)
-        if grupa == "Ćwiczą regularnie":
-            dane_f = df[df['Regularne_Cwiczenia'] == 'Tak']
-        elif grupa == "Nie ćwiczą":
-            dane_f = df[df['Regularne_Cwiczenia'] == 'Nie']
+        # Filtrowanie danych w zależności od wyboru w liście rozwijanej
+        if grupa == "szyjny":
+            dane_f = df[df['Odcinek'] == 'szyjny']
+        elif grupa == "piersiowy":
+            dane_f = df[df['Odcinek'] == 'piersiowy']
+        elif grupa == "lędźwiowy":
+            dane_f = df[df['Odcinek'] == 'lędźwiowy']
         else:
-            dane_f = df
+            dane_f = df  # Wszyscy
 
         liczba_pacjentow = len(dane_f)
         sredni_wiek = dane_f['Wiek'].mean() if liczba_pacjentow > 0 else 0
@@ -119,10 +127,10 @@ def rysuj_wykres():
             ax.set_xlabel("Wiek pacjenta")
             ax.set_ylabel("Skala bólu (1-10)")
         elif typ == "Średnia wg grupy":
-            srednie = df.groupby('Regularne_cwiczenia')['Skala_Bolu_1_10'].mean()
-            srednie.plot(kind='bar', ax=ax, color=['#3498db', '#e74c3c'], edgecolor='black', rot=0)
-            ax.set_title("Średni poziom bólu: Ćwiczący vs Niećwiczący")
-            ax.set_xlabel("Regularne Cwiczenia")
+            srednie = df.groupby('Odcinek')['Skala_Bolu_1_10'].mean()
+            srednie.plot(kind='bar', ax=ax, color=['#3498db', '#e74c3c', '#2ecc71'], edgecolor='black', rot=0)
+            ax.set_title("Średni poziom bólu w zależności od odcinka kręgosłupa")
+            ax.set_xlabel("Odcinek kręgosłupa")
             ax.set_ylabel("Średnia skala bólu")
         else:
             ax.text(0.5, 0.5, "Wybierz poprawny wykres", horizontalalignment='center', verticalalignment='center')
@@ -156,7 +164,7 @@ przycisk_aktualizuj.pack(side="left", padx=10)
 
 
 przycisk_aktualizuj.config(command=rysuj_wykres)
-rysuj_wykres()
+
 
 def zamknij_aplikacje():
         print("Zamykanie aplikacji...")
