@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 from tkinter import ttk
 
-from matplotlib.backendImport FigureCanvasTkAgg do osadzania wyks.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 # Stworzenie głównego okna aplikacji
 okno = tk.Tk()
