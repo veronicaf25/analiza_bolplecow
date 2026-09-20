@@ -14,3 +14,7 @@ okno.geometry("900x750")
 # Stworzenie głównej ramki na górne elementy sterujące (filtry)
 ramka_gorna = ttk.Frame(okno, padding="10")
 ramka_gorna.pack(fill="x", padx=10, pady=10)
+
+# Etykieta informacyjna dla panelu sterowania
+etykieta_wykres = ttk.Label(ramka_gorna, text="Wybierz typ wykresu:")
+etykieta_wykres.pack(side="left", padx=5)
