@@ -44,6 +44,10 @@ wybor_grupy.current(0)
 przycisk_aktualizuj = ttk.Button(ramka_gorna, text="Generuj wykres")
 przycisk_aktualizuj.pack(side="left", padx=10)
 
+# Ramka kontenerowa na wykres/tabelę w środkowej części okna
+ramka_srodek = ttk.Frame(okno, padding="10")
+ramka_srodek.pack(fill="both", expand=True, padx=10, pady=5)
+
 # Wczytanie pliku z danymi pacjentów z zabezpieczeniem ścieżki
 try:
     df = pd.read_csv('data/dane_pacjenci_bol_plecow.csv')
