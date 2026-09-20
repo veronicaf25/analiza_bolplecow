@@ -10,3 +10,7 @@ from matplotlib.backendImport FigureCanvasTkAgg do osadzania wyks.backend_tkagg 
 okno = tk.Tk()
 okno.title("Analiza pacjentów z bólem pleców")
 okno.geometry("900x750")
+
+# Stworzenie głównej ramki na górne elementy sterujące (filtry)
+ramka_gorna = ttk.Frame(okno, padding="10")
+ramka_gorna.pack(fill="x", padx=10, pady=10)
