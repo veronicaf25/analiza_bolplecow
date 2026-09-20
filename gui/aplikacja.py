@@ -48,6 +48,9 @@ przycisk_aktualizuj.pack(side="left", padx=10)
 ramka_srodek = ttk.Frame(okno, padding="10")
 ramka_srodek.pack(fill="both", expand=True, padx=10, pady=5)
 
+# Inicjalizacja figury i osi wykresu biblioteki Matplotlib
+fig, ax = plt.subplots(figsize=(6, 4), dpi=100)
+
 # Wczytanie pliku z danymi pacjentów z zabezpieczeniem ścieżki
 try:
     df = pd.read_csv('data/dane_pacjenci_bol_plecow.csv')
