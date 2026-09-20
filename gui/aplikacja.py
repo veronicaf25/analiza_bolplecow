@@ -102,3 +102,6 @@ def rysuj_wykres():
 
 # Powiązanie przycisku z funkcją rysującą
 przycisk_aktualizuj.config(command=rysuj_wykres)
+
+# Wywołanie funkcji rysującej od razu przy starcie aplikacji
+rysuj_wykres()
