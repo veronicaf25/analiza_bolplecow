@@ -17,6 +17,10 @@ okno = tk.Tk()
 okno.title("Analiza pacjentów z bólem pleców")
 okno.geometry("900x750")
 
+# Konfiguracja nowoczesnego stylu interfejsu
+ styl = ttk.Style()
+ styl.theme_use('clam')  # Użycie nowoczesnego motywu
+
 # Stworzenie głównej ramki na górne elementy sterujące (filtry)
 ramka_gorna = ttk.Frame(okno, padding="10")
 ramka_gorna.pack(fill="x", padx=10, pady=10)
