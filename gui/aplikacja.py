@@ -53,9 +53,9 @@ wybor_grupy.current(0)
 # 1. Najpierw definiujemy funkcję eksportu:
 def eksportuj_dane():
     if grupa == "Ćwiczą regularnie":
-        dane_f = df[df['Regularne_cwiczenia'] == 'Tak']
+        dane_f = df[df['Regularne_Cwiczenia'] == 'Tak']
     elif grupa == "Nie ćwiczą":
-        dane_f = df[df['Regularne_cwiczenia'] == 'Nie']
+        dane_f = df[df['Regularne_Cwiczenia'] == 'Nie']
     else:
         dane_f = df
 
@@ -80,9 +80,9 @@ def rysuj_wykres():
 
         # Filtrowanie danych dla pracy siedzącej (A) i niesiedzącej (B)
         if grupa == "Ćwiczą regularnie":
-            dane_f = df[df['Regularne_cwiczenia'] == 'Tak']
+            dane_f = df[df['Regularne_Cwiczenia'] == 'Tak']
         elif grupa == "Nie ćwiczą":
-            dane_f = df[df['Regularne_cwiczenia'] == 'Nie']
+            dane_f = df[df['Regularne_Cwiczenia'] == 'Nie']
         else:
             dane_f = df
 
@@ -122,7 +122,7 @@ def rysuj_wykres():
             srednie = df.groupby('Regularne_cwiczenia')['Skala_Bolu_1_10'].mean()
             srednie.plot(kind='bar', ax=ax, color=['#3498db', '#e74c3c'], edgecolor='black', rot=0)
             ax.set_title("Średni poziom bólu: Ćwiczący vs Niećwiczący")
-            ax.set_xlabel("Regularne ćwiczenia")
+            ax.set_xlabel("Regularne Cwiczenia")
             ax.set_ylabel("Średnia skala bólu")
         else:
             ax.text(0.5, 0.5, "Wybierz poprawny wykres", horizontalalignment='center', verticalalignment='center')
