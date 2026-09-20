@@ -1,6 +1,7 @@
 import tkinter as tk
 import pandas as pd
 import matplotlib.pyplot as plt
+from tkinter import messagebox
 
 from tkinter import ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -71,6 +72,10 @@ przycisk_eksport.pack(side="left", padx=5)
 przycisk_reset = ttk.Button(ramka_gorna, text="Resetuj filtry", command=resetuj_filtry)
 przycisk_reset.pack(side="left", padx=5)
 
+# Przycisk wyświetlający okno informacyjne
+przycisk_info = ttk.Button(ramka_gorna, text="O programie", command=pokaz_informacje)
+przycisk_info.pack(side="left", padx=5)
+
 # Ramka kontenerowa na wykres/tabelę w środkowej części okna
 ramka_srodek = ttk.Frame(okno, padding="10")
 ramka_srodek.pack(fill="both", expand=True, padx=10, pady=5)
@@ -119,6 +124,10 @@ def resetuj_filtry():
     rysuj_wykres()
     etykieta_status.config(text="Status: Zresetowano filtry")
 
+# Funkcja wyświetlająca okno dialogowe z informacjami o aplikacji
+def pokaz_informacje():
+    messagebox.showinfo("O programie", "Aplikacja do analizy danych pacjentów z bólem pleców.\nProjekt inżynierski / zaliczeniowy.")
+    etykieta_status.config(text="Status: Wyświetlono informacje o programie")
 
 # Funkcja odpowiedzialna za generowanie wykresów na podstawie filtrów
 def rysuj_wykres():
