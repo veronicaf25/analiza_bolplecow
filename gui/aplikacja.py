@@ -67,6 +67,10 @@ def eksportuj_dane():
 przycisk_eksport = ttk.Button(ramka_gorna, text="Eksportuj CSV", command=eksportuj_dane)
 przycisk_eksport.pack(side="left", padx=5)
 
+# Przycisk resetujący filtry
+przycisk_reset = ttk.Button(ramka_gorna, text="Resetuj filtry", command=resetuj_filtry)
+przycisk_reset.pack(side="left", padx=5)
+
 # Ramka kontenerowa na wykres/tabelę w środkowej części okna
 ramka_srodek = ttk.Frame(okno, padding="10")
 ramka_srodek.pack(fill="both", expand=True, padx=10, pady=5)
@@ -108,6 +112,13 @@ def eksportuj_dane():
     # Zapis do pliku CSV
     dane_eksport.to_csv("raport_z_analizy.csv", index=False)
     print("Zapisano dane do pliku raport_z_analizy.csv!")
+# Funkcja resetująca filtry do wartości domyślnych
+def resetuj_filtry():
+    wybor_wykresu.current(0)
+    wybor_grupy.current(0)
+    rysuj_wykres()
+    etykieta_status.config(text="Status: Zresetowano filtry")
+
 
 # Funkcja odpowiedzialna za generowanie wykresów na podstawie filtrów
 def rysuj_wykres():
