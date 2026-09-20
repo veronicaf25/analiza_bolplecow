@@ -107,6 +107,23 @@ def rysuj_wykres():
         ax.set_title("Rozkład poziomu bólu")
         ax.set_xlabel("Skala bólu")
         ax.set_ylabel("Liczba pacjentów")
+
+        elif typ == "Korelacja cech":
+        # Wykres słupkowy lub punktowy pokazujący np. zależność między dwoma parametrycznymi cechami
+        ax.scatter(dane_f['Wiek'], dane_f['Bol_Plecow'], c=dane_f['Bol_Plecow'], cmap='viridis', alpha=0.8)
+        ax.set_title("Korelacja cech pacjentów")
+        ax.set_xlabel("Wiek")
+        ax.set_ylabel("Poziom bólu")
+    elif typ == "Średnia wg grupy":
+        # Przykład analizy grupowanej
+        srednie = df.groupby('Grupa')['Bol_Plecow'].mean()
+        srednie.plot(kind='bar', ax=ax, color=['#3498db', '#e74c3c'], edgecolor='black')
+        ax.set_title("Średni poziom bólu w grupach")
+        ax.set_xlabel("Grupa")
+        ax.set_ylabel("Średni ból")
+    else:
+        # Wykres domyślny zabezpieczający
+        ax.text(0.5, 0.5, "Wybierz poprawny wykres", horizontalalignment='center', verticalalignment='center')
     else:
         # Wykres domyślny dla pozostałych opcji
         ax.plot([1, 2, 3, 4], [10, 20, 15, 25], marker='o', color='orange')
