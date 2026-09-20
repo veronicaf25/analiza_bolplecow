@@ -1,201 +1,197 @@
-﻿ID_Pacjenta,Plec,Wiek,Praca_Siedzaca,Regularne_Cwiczenia,Skala_Bolu_1_10,Inne_Bole
-1,Kobieta,56,Tak,Tak,3,Brak
-2,Mężczyzna,63,Tak,Nie,5,Promieniowanie do nogi
-3,Kobieta,56,Tak,Nie,8,Odcinek szyjny
-4,Kobieta,28,Tak,Tak,3,Odcinek szyjny
-5,Kobieta,54,Nie,Nie,4,Odcinek szyjny
-6,Mężczyzna,61,Nie,Nie,3,Promieniowanie do nogi
-7,Kobieta,47,Tak,Nie,9,Brak
-8,Kobieta,63,Tak,Nie,10,Odcinek szyjny
-9,Kobieta,69,Nie,Nie,6,Odcinek szyjny
-10,Mężczyzna,39,Tak,Nie,6,Głowa
-11,Kobieta,67,Tak,Nie,6,Brak
-12,Kobieta,53,Tak,Tak,3,Promieniowanie do nogi
-13,Kobieta,60,Tak,Nie,7,Promieniowanie do nogi
-14,Kobieta,37,Nie,Nie,7,Odcinek szyjny
-15,Mężczyzna,56,Tak,Tak,2,Głowa
-16,Kobieta,31,Nie,Nie,7,Promieniowanie do nogi
-17,Mężczyzna,46,Tak,Nie,5,Głowa
-18,Mężczyzna,52,Tak,Nie,5,Brak
-19,Mężczyzna,26,Tak,Nie,9,Odcinek szyjny
-20,Kobieta,66,Tak,Nie,10,Głowa
-21,Mężczyzna,69,Nie,Nie,7,Odcinek szyjny
-22,Kobieta,30,Tak,Tak,2,Głowa
-23,Mężczyzna,52,Tak,Nie,10,Promieniowanie do nogi
-24,Mężczyzna,52,Nie,Nie,6,Promieniowanie do nogi
-25,Mężczyzna,68,Tak,Tak,2,Odcinek szyjny
-26,Mężczyzna,68,Tak,Nie,7,Brak
-27,Mężczyzna,44,Tak,Tak,2,Promieniowanie do nogi
-28,Mężczyzna,54,Tak,Tak,2,Kolana
-29,Mężczyzna,35,Nie,Tak,2,Brak
-30,Mężczyzna,52,Tak,Tak,3,Promieniowanie do nogi
-31,Kobieta,49,Tak,Nie,5,Promieniowanie do nogi
-32,Kobieta,63,Tak,Nie,7,Odcinek szyjny
-33,Mężczyzna,57,Nie,Nie,5,Odcinek szyjny
-34,Mężczyzna,25,Tak,Nie,9,Odcinek szyjny
-35,Mężczyzna,51,Tak,Nie,8,Brak
-36,Kobieta,37,Nie,Nie,4,Odcinek szyjny
-37,Mężczyzna,65,Nie,Tak,4,Kolana
-38,Kobieta,27,Nie,Nie,6,Brak
-39,Kobieta,63,Tak,Tak,3,Odcinek szyjny
-40,Kobieta,30,Tak,Nie,8,Odcinek szyjny
-41,Kobieta,32,Tak,Tak,3,Odcinek szyjny
-42,Kobieta,51,Tak,Nie,10,Promieniowanie do nogi
-43,Mężczyzna,33,Tak,Nie,10,Odcinek szyjny
-44,Mężczyzna,61,Nie,Tak,1,Odcinek szyjny
-45,Mężczyzna,57,Tak,Tak,2,Głowa
-46,Mężczyzna,66,Nie,Nie,5,Odcinek szyjny
-47,Mężczyzna,68,Tak,Tak,2,Odcinek szyjny
-48,Kobieta,48,Nie,Nie,3,Odcinek szyjny
-49,Mężczyzna,39,Tak,Tak,2,Brak
-50,Mężczyzna,56,Tak,Tak,3,Brak
-51,Kobieta,56,Nie,Nie,5,Odcinek szyjny
-52,Mężczyzna,48,Tak,Nie,6,Odcinek szyjny
-53,Kobieta,65,Tak,Tak,3,Promieniowanie do nogi
-54,Mężczyzna,36,Nie,Tak,1,Odcinek szyjny
-55,Kobieta,63,Nie,Tak,4,Odcinek szyjny
-56,Mężczyzna,26,Tak,Nie,9,Głowa
-57,Mężczyzna,27,Tak,Nie,10,Brak
-58,Kobieta,61,Tak,Nie,6,Głowa
-59,Kobieta,41,Nie,Nie,6,Brak
-60,Kobieta,26,Tak,Tak,3,Promieniowanie do nogi
-61,Kobieta,26,Tak,Nie,8,Brak
-62,Kobieta,52,Tak,Nie,5,Odcinek szyjny
-63,Kobieta,47,Tak,Tak,4,Brak
-64,Kobieta,61,Nie,Nie,3,Promieniowanie do nogi
-65,Kobieta,56,Tak,Nie,8,Odcinek szyjny
-66,Mężczyzna,57,Nie,Nie,3,Odcinek szyjny
-67,Mężczyzna,25,Tak,Nie,6,Brak
-68,Kobieta,43,Tak,Nie,10,Głowa
-69,Mężczyzna,26,Tak,Nie,10,Odcinek szyjny
-70,Mężczyzna,68,Tak,Nie,9,Promieniowanie do nogi
-71,Mężczyzna,50,Nie,Nie,5,Odcinek szyjny
-72,Mężczyzna,56,Nie,Nie,6,Brak
-73,Kobieta,30,Tak,Tak,1,Brak
-74,Mężczyzna,56,Nie,Tak,3,Odcinek szyjny
-75,Kobieta,28,Tak,Tak,3,Odcinek szyjny
-76,Mężczyzna,35,Nie,Tak,1,Brak
-77,Mężczyzna,41,Tak,Tak,2,Kolana
-78,Mężczyzna,62,Tak,Nie,6,Odcinek szyjny
-79,Kobieta,48,Tak,Nie,6,Odcinek szyjny
-80,Mężczyzna,29,Tak,Nie,9,Odcinek szyjny
-81,Kobieta,58,Tak,Nie,6,Odcinek szyjny
-82,Mężczyzna,30,Tak,Nie,8,Odcinek szyjny
-83,Kobieta,46,Tak,Nie,6,Brak
-84,Mężczyzna,35,Tak,Nie,9,Brak
-85,Kobieta,40,Nie,Nie,4,Promieniowanie do nogi
-86,Kobieta,57,Tak,Tak,4,Promieniowanie do nogi
-87,Mężczyzna,33,Tak,Tak,1,Odcinek szyjny
-88,Kobieta,30,Nie,Tak,3,Odcinek szyjny
-89,Mężczyzna,40,Nie,Tak,1,Głowa
-90,Mężczyzna,53,Tak,Tak,1,Odcinek szyjny
-91,Mężczyzna,27,Tak,Nie,5,Brak
-92,Mężczyzna,44,Nie,Nie,3,Brak
-93,Mężczyzna,60,Tak,Tak,3,Głowa
-94,Mężczyzna,43,Nie,Tak,3,Głowa
-95,Mężczyzna,50,Nie,Tak,4,Brak
-96,Mężczyzna,27,Tak,Nie,10,Odcinek szyjny
-97,Mężczyzna,43,Tak,Nie,7,Odcinek szyjny
-98,Mężczyzna,44,Nie,Nie,3,Głowa
-99,Mężczyzna,56,Tak,Nie,9,Brak
-100,Kobieta,31,Tak,Nie,10,Brak
-101,Kobieta,65,Nie,Nie,6,Kolana
-102,Mężczyzna,57,Nie,Tak,4,Brak
-103,Mężczyzna,64,Nie,Nie,4,Głowa
-104,Mężczyzna,63,Nie,Nie,7,Odcinek szyjny
-105,Mężczyzna,42,Nie,Nie,5,Brak
-106,Mężczyzna,64,Nie,Nie,3,Odcinek szyjny
-107,Mężczyzna,25,Nie,Nie,4,Głowa
-108,Mężczyzna,35,Nie,Nie,6,Promieniowanie do nogi
-109,Mężczyzna,52,Tak,Nie,7,Kolana
-110,Kobieta,49,Tak,Nie,7,Odcinek szyjny
-111,Mężczyzna,47,Nie,Nie,3,Głowa
-112,Kobieta,55,Nie,Nie,6,Odcinek szyjny
-113,Mężczyzna,54,Nie,Nie,7,Odcinek szyjny
-114,Mężczyzna,66,Nie,Nie,5,Promieniowanie do nogi
-115,Kobieta,59,Nie,Nie,3,Brak
-116,Mężczyzna,31,Tak,Tak,1,Brak
-117,Kobieta,40,Tak,Nie,10,Odcinek szyjny
-118,Mężczyzna,50,Tak,Nie,8,Brak
-119,Mężczyzna,26,Tak,Nie,10,Brak
-120,Kobieta,25,Tak,Nie,7,Odcinek szyjny
-121,Mężczyzna,36,Nie,Tak,1,Odcinek szyjny
-122,Kobieta,29,Tak,Nie,9,Promieniowanie do nogi
-123,Mężczyzna,61,Nie,Nie,7,Kolana
-124,Kobieta,56,Tak,Nie,7,Odcinek szyjny
-125,Kobieta,33,Nie,Nie,5,Odcinek szyjny
-126,Mężczyzna,65,Tak,Nie,10,Odcinek szyjny
-127,Mężczyzna,59,Tak,Nie,6,Odcinek szyjny
-128,Kobieta,43,Tak,Tak,2,Odcinek szyjny
-129,Mężczyzna,40,Nie,Tak,4,Głowa
-130,Mężczyzna,27,Tak,Nie,5,Odcinek szyjny
-131,Mężczyzna,44,Nie,Nie,7,Odcinek szyjny
-132,Kobieta,48,Tak,Tak,2,Odcinek szyjny
-133,Kobieta,57,Tak,Nie,5,Odcinek szyjny
-134,Kobieta,48,Nie,Nie,4,Promieniowanie do nogi
-135,Kobieta,35,Tak,Nie,10,Kolana
-136,Kobieta,32,Tak,Nie,7,Brak
-137,Kobieta,60,Tak,Nie,9,Promieniowanie do nogi
-138,Kobieta,62,Tak,Nie,10,Odcinek szyjny
-139,Kobieta,64,Nie,Nie,3,Promieniowanie do nogi
-140,Kobieta,44,Tak,Tak,3,Kolana
-141,Mężczyzna,59,Tak,Nie,5,Odcinek szyjny
-142,Kobieta,49,Tak,Nie,5,Brak
-143,Mężczyzna,59,Nie,Nie,3,Odcinek szyjny
-144,Mężczyzna,49,Tak,Nie,5,Odcinek szyjny
-145,Mężczyzna,53,Tak,Nie,6,Głowa
-146,Kobieta,42,Nie,Nie,7,Odcinek szyjny
-147,Kobieta,42,Nie,Tak,4,Brak
-148,Kobieta,26,Tak,Nie,7,Kolana
-149,Kobieta,59,Tak,Nie,7,Promieniowanie do nogi
-150,Mężczyzna,40,Tak,Nie,10,Odcinek szyjny
-151,Kobieta,65,Tak,Tak,2,Brak
-152,Kobieta,60,Tak,Nie,7,Odcinek szyjny
-153,Kobieta,57,Tak,Nie,7,Brak
-154,Kobieta,28,Tak,Nie,6,Promieniowanie do nogi
-155,Kobieta,57,Tak,Nie,8,Brak
-156,Mężczyzna,38,Nie,Tak,3,Odcinek szyjny
-157,Kobieta,45,Nie,Nie,7,Odcinek szyjny
-158,Mężczyzna,44,Tak,Nie,5,Odcinek szyjny
-159,Kobieta,32,Nie,Tak,4,Głowa
-160,Mężczyzna,31,Nie,Nie,5,Kolana
-161,Kobieta,27,Tak,Nie,8,Odcinek szyjny
-162,Kobieta,41,Tak,Nie,9,Brak
-163,Mężczyzna,57,Tak,Tak,2,Brak
-164,Mężczyzna,36,Tak,Nie,5,Promieniowanie do nogi
-165,Mężczyzna,46,Nie,Tak,1,Promieniowanie do nogi
-166,Kobieta,46,Tak,Nie,9,Odcinek szyjny
-167,Mężczyzna,54,Tak,Tak,1,Głowa
-168,Kobieta,62,Nie,Nie,5,Głowa
-169,Kobieta,62,Nie,Nie,3,Brak
-170,Mężczyzna,69,Tak,Nie,10,Promieniowanie do nogi
-171,Mężczyzna,32,Nie,Nie,6,Odcinek szyjny
-172,Kobieta,51,Nie,Tak,2,Odcinek szyjny
-173,Kobieta,51,Nie,Nie,4,Odcinek szyjny
-174,Mężczyzna,58,Tak,Nie,6,Brak
-175,Mężczyzna,45,Nie,Nie,7,Brak
-176,Mężczyzna,54,Tak,Tak,3,Głowa
-177,Kobieta,57,Nie,Tak,2,Brak
-178,Kobieta,52,Nie,Tak,1,Głowa
-179,Kobieta,57,Nie,Nie,7,Odcinek szyjny
-180,Kobieta,29,Nie,Nie,6,Odcinek szyjny
-181,Kobieta,43,Nie,Nie,7,Odcinek szyjny
-182,Kobieta,28,Nie,Tak,4,Odcinek szyjny
-183,Mężczyzna,59,Tak,Nie,8,Głowa
-184,Kobieta,41,Tak,Nie,9,Odcinek szyjny
-185,Kobieta,68,Tak,Nie,9,Odcinek szyjny
-186,Kobieta,52,Nie,Tak,1,Odcinek szyjny
-187,Mężczyzna,54,Tak,Nie,8,Głowa
-188,Kobieta,53,Tak,Tak,4,Promieniowanie do nogi
-189,Kobieta,30,Tak,Nie,9,Głowa
-190,Mężczyzna,59,Tak,Nie,6,Odcinek szyjny
-191,Kobieta,65,Nie,Tak,3,Brak
-192,Kobieta,61,Nie,Nie,5,Odcinek szyjny
-193,Kobieta,48,Tak,Tak,3,Odcinek szyjny
-194,Kobieta,53,Nie,Nie,6,Brak
-195,Kobieta,55,Tak,Nie,8,Odcinek szyjny
-196,Mężczyzna,59,Tak,Nie,6,Odcinek szyjny
-197,Mężczyzna,57,Nie,Nie,5,Odcinek szyjny
-198,Mężczyzna,45,Tak,Nie,7,Kolana
-199,Kobieta,56,Tak,Nie,9,Brak
-200,Kobieta,47,Nie,Nie,6,Brak
+﻿Wiek,Plec,Skala_Bolu_1_10,Regularne_cwiczenia,Odcinek,Praca_siedzaca
+34,Kobieta,7,Tak,lędźwiowy,Tak
+45,Mężczyzna,4,Nie,szyjny,Nie
+29,Kobieta,8,Tak,piersiowy,Tak
+52,Mężczyzna,3,Tak,lędźwiowy,Nie
+39,Kobieta,9,Nie,lędźwiowy,Tak
+41,Mężczyzna,5,Tak,szyjny,Tak
+27,Kobieta,2,Nie,piersiowy,Nie
+48,Mężczyzna,6,Tak,lędźwiowy,Tak
+33,Kobieta,8,Nie,piersiowy,Tak
+56,Mężczyzna,9,Nie,lędźwiowy,Nie
+26,Kobieta,4,Tak,szyjny,Tak
+44,Mężczyzna,5,Tak,lędźwiowy,Tak
+38,Kobieta,7,Nie,szyjny,Nie
+61,Mężczyzna,8,Nie,lędźwiowy,Nie
+23,Kobieta,3,Tak,piersiowy,Tak
+50,Mężczyzna,6,Tak,lędźwiowy,Tak
+31,Kobieta,5,Nie,piersiowy,Nie
+47,Mężczyzna,7,Tak,lędźwiowy,Tak
+35,Kobieta,4,Nie,szyjny,Tak
+59,Mężczyzna,9,Nie,lędźwiowy,Nie
+25,Kobieta,2,Tak,piersiowy,Tak
+42,Mężczyzna,6,Tak,lędźwiowy,Tak
+36,Kobieta,8,Nie,szyjny,Nie
+53,Mężczyzna,7,Nie,lędźwiowy,Nie
+28,Kobieta,4,Tak,piersiowy,Tak
+49,Mężczyzna,5,Tak,lędźwiowy,Tak
+32,Kobieta,6,Nie,szyjny,Nie
+60,Mężczyzna,10,Nie,lędźwiowy,Nie
+24,Kobieta,3,Tak,piersiowy,Tak
+46,Mężczyzna,7,Tak,lędźwiowy,Tak
+30,Kobieta,5,Nie,szyjny,Nie
+51,Mężczyzna,8,Nie,lędźwiowy,Tak
+27,Kobieta,4,Tak,piersiowy,Tak
+43,Mężczyzna,6,Tak,lędźwiowy,Tak
+37,Kobieta,9,Nie,szyjny,Nie
+55,Mężczyzna,7,Nie,lędźwiowy,Nie
+26,Kobieta,3,Tak,piersiowy,Tak
+40,Mężczyzna,5,Tak,lędźwiowy,Tak
+34,Kobieta,6,Nie,szyjny,Nie
+58,Mężczyzna,9,Nie,lędźwiowy,Nie
+29,Kobieta,2,Tak,piersiowy,Tak
+44,Mężczyzna,7,Tak,lędźwiowy,Tak
+35,Kobieta,8,Nie,szyjny,Nie
+52,Mężczyzna,6,Nie,lędźwiowy,Nie
+23,Kobieta,4,Tak,piersiowy,Tak
+47,Mężczyzna,5,Tak,lędźwiowy,Tak
+33,Kobieta,6,Nie,szyjny,Nie
+56,Mężczyzna,10,Nie,lędźwiowy,Nie
+28,Kobieta,3,Tak,piersiowy,Tak
+45,Mężczyzna,7,Tak,lędźwiowy,Tak
+31,Kobieta,5,Nie,piersiowy,Nie
+50,Mężczyzna,8,Tak,lędźwiowy,Tak
+25,Kobieta,4,Tak,piersiowy,Tak
+41,Mężczyzna,6,Tak,lędźwiowy,Tak
+36,Kobieta,7,Nie,szyjny,Nie
+54,Mężczyzna,9,Nie,lędźwiowy,Nie
+24,Kobieta,2,Tak,piersiowy,Tak
+48,Mężczyzna,6,Tak,lędźwiowy,Tak
+30,Kobieta,8,Nie,szyjny,Nie
+57,Mężczyzna,7,Nie,lędźwiowy,Nie
+27,Kobieta,3,Tak,piersiowy,Tak
+42,Mężczyzna,5,Tak,lędźwiowy,Tak
+32,Kobieta,6,Nie,szyjny,Nie
+53,Mężczyzna,9,Nie,lędźwiowy,Nie
+26,Kobieta,4,Tak,piersiowy,Tak
+46,Mężczyzna,7,Tak,lędźwiowy,Tak
+35,Kobieta,5,Nie,szyjny,Nie
+59,Mężczyzna,8,Nie,lędźwiowy,Nie
+29,Kobieta,3,Tak,piersiowy,Tak
+44,Mężczyzna,6,Tak,lędźwiowy,Tak
+33,Kobieta,7,Nie,szyjny,Nie
+51,Mężczyzna,9,Nie,lędźwiowy,Nie
+23,Kobieta,2,Tak,piersiowy,Tak
+40,Mężczyzna,5,Tak,lędźwiowy,Tak
+37,Kobieta,8,Nie,szyjny,Nie
+55,Mężczyzna,6,Nie,lędźwiowy,Nie
+28,Kobieta,4,Tak,piersiowy,Tak
+47,Mężczyzna,7,Tak,lędźwiowy,Tak
+31,Kobieta,6,Nie,szyjny,Nie
+52,Mężczyzna,8,Tak,lędźwiowy,Tak
+25,Kobieta,3,Tak,piersiowy,Tak
+43,Mężczyzna,5,Tak,lędźwiowy,Tak
+34,Kobieta,7,Nie,szyjny,Nie
+58,Mężczyzna,10,Nie,lędźwiowy,Nie
+27,Kobieta,4,Tak,piersiowy,Tak
+45,Mężczyzna,6,Tak,lędźwiowy,Tak
+30,Kobieta,8,Nie,szyjny,Nie
+56,Mężczyzna,7,Nie,lędźwiowy,Nie
+26,Kobieta,2,Tak,piersiowy,Tak
+41,Mężczyzna,5,Tak,lędźwiowy,Tak
+36,Kobieta,9,Nie,szyjny,Nie
+50,Mężczyzna,6,Tak,lędźwiowy,Tak
+24,Kobieta,3,Tak,piersiowy,Tak
+49,Mężczyzna,7,Tak,lędźwiowy,Tak
+32,Kobieta,6,Nie,szyjny,Nie
+54,Mężczyzna,8,Tak,lędźwiowy,Tak
+29,Kobieta,4,Tak,piersiowy,Tak
+46,Mężczyzna,5,Tak,lędźwiowy,Tak
+33,Kobieta,7,Nie,szyjny,Nie
+57,Mężczyzna,9,Nie,lędźwiowy,Nie
+28,Kobieta,3,Tak,piersiowy,Tak
+44,Mężczyzna,6,Tak,lędźwiowy,Tak
+35,Kobieta,8,Nie,szyjny,Nie
+53,Mężczyzna,7,Nie,lędźwiowy,Nie
+25,Kobieta,4,Tak,piersiowy,Tak
+42,Mężczyzna,5,Tak,lędźwiowy,Tak
+31,Kobieta,6,Nie,szyjny,Nie
+59,Mężczyzna,10,Nie,lędźwiowy,Nie
+23,Kobieta,2,Tak,piersiowy,Tak
+47,Mężczyzna,8,Tak,lędźwiowy,Tak
+30,Kobieta,5,Nie,szyjny,Nie
+51,Mężczyzna,6,Nie,lędźwiowy,Nie
+27,Kobieta,4,Tak,piersiowy,Tak
+40,Mężczyzna,7,Tak,lędźwiowy,Tak
+36,Kobieta,8,Nie,szyjny,Nie
+55,Mężczyzna,9,Nie,lędźwiowy,Nie
+26,Kobieta,3,Tak,piersiowy,Tak
+45,Mężczyzna,6,Tak,lędźwiowy,Tak
+34,Kobieta,5,Nie,szyjny,Nie
+52,Mężczyzna,7,Nie,lędźwiowy,Nie
+29,Kobieta,4,Tak,piersiowy,Tak
+48,Mężczyzna,8,Tak,lędźwiowy,Tak
+32,Kobieta,6,Nie,szyjny,Nie
+56,Mężczyzna,10,Nie,lędźwiowy,Nie
+24,Kobieta,3,Tak,piersiowy,Tak
+43,Mężczyzna,5,Tak,lędźwiowy,Tak
+33,Kobieta,7,Nie,szyjny,Nie
+58,Mężczyzna,6,Nie,lędźwiowy,Nie
+28,Kobieta,4,Tak,piersiowy,Tak
+46,Mężczyzna,9,Tak,lędźwiowy,Tak
+35,Kobieta,8,Nie,szyjny,Nie
+50,Mężczyzna,7,Tak,lędźwiowy,Tak
+25,Kobieta,2,Tak,piersiowy,Tak
+41,Mężczyzna,6,Tak,lędźwiowy,Tak
+31,Kobieta,5,Nie,szyjny,Nie
+54,Mężczyzna,8,Tak,lędźwiowy,Tak
+27,Kobieta,4,Tak,piersiowy,Tak
+49,Mężczyzna,7,Tak,lędźwiowy,Tak
+36,Kobieta,6,Nie,szyjny,Nie
+57,Mężczyzna,9,Nie,lędźwiowy,Nie
+23,Kobieta,3,Tak,piersiowy,Tak
+44,Mężczyzna,5,Tak,lędźwiowy,Tak
+30,Kobieta,8,Nie,szyjny,Nie
+53,Mężczyzna,6,Nie,lędźwiowy,Nie
+26,Kobieta,4,Tak,piersiowy,Tak
+42,Mężczyzna,7,Tak,lędźwiowy,Tak
+33,Kobieta,5,Nie,szyjny,Nie
+59,Mężczyzna,10,Nie,lędźwiowy,Nie
+29,Kobieta,2,Tak,piersiowy,Tak
+47,Mężczyzna,6,Tak,lędźwiowy,Tak
+35,Kobieta,8,Nie,szyjny,Nie
+51,Mężczyzna,7,Nie,lędźwiowy,Nie
+24,Kobieta,4,Tak,piersiowy,Tak
+40,Mężczyzna,5,Tak,lędźwiowy,Tak
+32,Kobieta,7,Nie,szyjny,Nie
+55,Mężczyzna,8,Nie,lędźwiowy,Nie
+28,Kobieta,3,Tak,piersiowy,Tak
+45,Mężczyzna,6,Tak,lędźwiowy,Tak
+37,Kobieta,9,Nie,szyjny,Nie
+52,Mężczyzna,7,Nie,lędźwiowy,Nie
+25,Kobieta,4,Tak,piersiowy,Tak
+48,Mężczyzna,5,Tak,lędźwiowy,Tak
+31,Kobieta,6,Nie,szyjny,Nie
+56,Mężczyzna,9,Nie,lędźwiowy,Nie
+26,Kobieta,3,Tak,piersiowy,Tak
+43,Mężczyzna,8,Tak,lędźwiowy,Tak
+34,Kobieta,5,Nie,szyjny,Nie
+58,Mężczyzna,7,Nie,lędźwiowy,Nie
+27,Kobieta,4,Tak,piersiowy,Tak
+46,Mężczyzna,6,Tak,lędźwiowy,Tak
+30,Kobieta,8,Nie,szyjny,Nie
+50,Mężczyzna,10,Nie,lędźwiowy,Nie
+23,Kobieta,2,Tak,piersiowy,Tak
+41,Mężczyzna,7,Tak,lędźwiowy,Tak
+35,Kobieta,6,Nie,szyjny,Nie
+54,Mężczyzna,8,Tak,lędźwiowy,Tak
+29,Kobieta,4,Tak,piersiowy,Tak
+49,Mężczyzna,5,Tak,lędźwiowy,Tak
+32,Kobieta,7,Nie,szyjny,Nie
+57,Mężczyzna,9,Nie,lędźwiowy,Nie
+24,Kobieta,3,Tak,piersiowy,Tak
+44,Mężczyzna,6,Tak,lędźwiowy,Tak
+33,Kobieta,8,Nie,szyjny,Nie
+53,Mężczyzna,7,Nie,lędźwiowy,Nie
+28,Kobieta,4,Tak,piersiowy,Tak
+42,Mężczyzna,5,Tak,lędźwiowy,Tak
+36,Kobieta,7,Nie,szyjny,Nie
+59,Mężczyzna,8,Nie,lędźwiowy,Nie
+25,Kobieta,2,Tak,piersiowy,Tak
+47,Mężczyzna,6,Tak,lędźwiowy,Tak
+31,Kobieta,9,Nie,szyjny,Nie
+51,Mężczyzna,7,Nie,lędźwiowy,Nie
+26,Kobieta,4,Tak,piersiowy,Tak
+40,Mężczyzna,5,Tak,lędźwiowy,Tak
+34,Kobieta,8,Nie,szyjny,Nie
+55,Mężczyzna,10,Nie,lędźwiowy,Nie
