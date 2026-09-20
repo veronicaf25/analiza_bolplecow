@@ -3,8 +3,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from tkinter import ttk
-
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
+# Wczytanie pliku z danymi pacjentów z zabezpieczeniem ścieżki
+try:
+    df = pd.read_csv('data/dane_pacjenci_bol_plecow.csv')
+except FileNotFoundError:
+    df = pd.read_csv('../data/dane_pacjenci_bol_plecow.csv')
 
 # Stworzenie głównego okna aplikacji
 okno = tk.Tk()
@@ -51,8 +56,3 @@ ramka_srodek.pack(fill="both", expand=True, padx=10, pady=5)
 # Inicjalizacja figury i osi wykresu biblioteki Matplotlib
 fig, ax = plt.subplots(figsize=(6, 4), dpi=100)
 
-# Wczytanie pliku z danymi pacjentów z zabezpieczeniem ścieżki
-try:
-    df = pd.read_csv('data/dane_pacjenci_bol_plecow.csv')
-except FileNotFoundError:
-    df = pd.read_csv('../data/dane_pacjenci_bol_plecow.csv')
