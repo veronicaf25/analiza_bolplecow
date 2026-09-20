@@ -49,7 +49,21 @@ wybor_grupy.current(0)
 przycisk_aktualizuj = ttk.Button(ramka_gorna, text="Generuj wykres")
 przycisk_aktualizuj.pack(side="left", padx=10)
 
-# Przycisk wyzwalający eksport danych
+# 1. Najpierw definiujemy funkcję eksportu:
+def eksportuj_dane():
+    grupa = wybor_grupy.get()
+    if grupa == "Grupa A":
+        dane_eksport = df[df['Grupa'] == 'A']
+    elif grupa == "Grupa B":
+        dane_eksport = df[df['Grupa'] == 'B']
+    else:
+        dane_eksport = df
+
+    dane_eksport.to_csv("raport_z_analizy.csv", index=False)
+    etykieta_status.config(text="Status: Wyeksportowano dane do pliku CSV!")
+    print("Zapisano dane do pliku raport_z_analizy.csv!")
+
+# 2. Dopiero potem tworzymy przycisk, który z niej korzysta:
 przycisk_eksport = ttk.Button(ramka_gorna, text="Eksportuj CSV", command=eksportuj_dane)
 przycisk_eksport.pack(side="left", padx=5)
 
@@ -131,7 +145,6 @@ def rysuj_wykres():
         ax.set_title("Rozkład poziomu bólu")
         ax.set_xlabel("Skala bólu")
         ax.set_ylabel("Liczba pacjentów")
-
     elif typ == "Korelacja cech":
         # Wykres słupkowy lub punktowy pokazujący np. zależność między dwoma parametrycznymi cechami
         ax.scatter(dane_f['Wiek'], dane_f['Bol_Plecow'], c=dane_f['Bol_Plecow'], cmap='viridis', alpha=0.8)
@@ -148,12 +161,7 @@ def rysuj_wykres():
     else:
         # Wykres domyślny zabezpieczający
         ax.text(0.5, 0.5, "Wybierz poprawny wykres", horizontalalignment='center', verticalalignment='center')
-    else:
-        # Wykres domyślny dla pozostałych opcji
-        ax.plot([1, 2, 3, 4], [10, 20, 15, 25], marker='o', color='orange')
-        ax.set_title(f"Analiza: {typ}")
-        ax.set_xlabel("Kategoria")
-        ax.set_ylabel("Wartość")
+
 
     # Odświeżenie płótna, aby nowy wykres wyświetlił się w oknie
     canvas.draw()
