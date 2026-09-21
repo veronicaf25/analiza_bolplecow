@@ -30,14 +30,14 @@ etykieta_wykres = ttk.Label(ramka_gorna, text="Wybierz typ wykresu:")
 etykieta_wykres.pack(side="left", padx=5)
 
 # Lista rozwijana do wyboru typu wykresu
-wybor_grupy = ttk.Combobox(
+wybor_wykresu = ttk.Combobox(
     ramka_gorna,
     values=["Wiek a ból", "Rozkład poziomu bólu", "Korelacja cech", "Średnia wg grupy"],
     state="readonly"
 )
 
-wybor_grupy.set("Wszyscy")
-wybor_grupy.pack(side="left", padx=5)
+wybor_wykresu.set("Wszyscy")
+wybor_wykresu.pack(side="left", padx=5)
 
 # Etykieta i lista rozwijana do filtrowania danych pacjentów
 etykieta_grupa = ttk.Label(ramka_gorna, text="Lokalizacja:")
@@ -80,7 +80,7 @@ def pokaz_informacje():
     etykieta_status.config(text="Status: Wyświetlono informacje o programie")
 
 
-def rysuj_wykres():
+def rysuj_wykres(event=None):
         typ = wybor_wykresu.get()
         grupa = wybor_grupy.get()
 
@@ -104,36 +104,25 @@ def rysuj_wykres():
 
         # 4 różne typy wykresów zgodnie z wytycznymi
         if typ == "Wiek a ból":
-        # Tworzymy przedziały wiekowe, żeby wykres pudełkowy był czytelny
-            dane_f['Przedzial_Wiekowy'] = pd.cut(dane_f['Wiek'], bins=[0, 30, 40, 50, 60, 100],
-                                             labels=['<30', '30-40', '41-50', '51-60', '60+'])
+              dane_f['Przedzial_Wiekowy'] = pd.cut(
+            dane_f['Wiek'],
+            bins=[0, 30, 40, 50, 60, 100],
+            labels=['<30', '30-40', '41-50', '51-60', '60+']
+        )
 
-        # Rysujemy wykres pudełkowy poziomu bólu w podziale na grupy wiekowe
-            dane_f.boxplot(column='Skala_Bolu_1_10', by='Przedzial_Wiekowy', ax=ax, grid=False)
-            ax.set_title("Rozkład bólu w grupach wiekowych")
+        if not dane_f.empty:
+            grupy_danych = [g_df['Skala_Bolu_1_10'].dropna().values for _, g_df in
+                            dane_f.groupby('Przedzial_Wiekowy', observed=True)]
+            etykiety = [str(nazwa) for nazwa, _ in dane_f.groupby('Przedzial_Wiekowy', observed=True)]
+
+            ax.boxplot(grupy_danych, tick_labels=etykiety)
+            ax.set_title("Rozkład poziomu bólu w grupach wiekowych")
             ax.set_xlabel("Grupa wiekowa")
             ax.set_ylabel("Skala bólu (1-10)")
-           # Ukrywamy domyślny, brzydki podpis generowany automatycznie przez pandas nad wykresem
-            plt.suptitle("")
-        elif typ == "Rozkład poziomo bólu":
-            ax.hist(dane_f['Skala_Bolu_1_10'], bins=8, color='teal', edgecolor='black')
-            ax.set_title("Rozkład poziomu bólu")
-            ax.set_xlabel("Skala bólu")
-            ax.set_ylabel("Liczba pacjentów")
-        elif typ == "Korelacja cech":
-            ax.scatter(dane_f['Wiek'], dane_f['Skala_Bolu_1_10'], c=dane_f['Skala_Bolu_1_10'], cmap='viridis',
-                       alpha=0.8, s=60)
-            ax.set_title("Korelacja wieku a poziomu bólu")
-            ax.set_xlabel("Wiek pacjenta")
-            ax.set_ylabel("Skala bólu (1-10)")
-        elif typ == "Średnia wg grupy":
-            srednie = df.groupby('Odcinek')['Skala_Bolu_1_10'].mean()
-            srednie.plot(kind='bar', ax=ax, color=['#3498db', '#e74c3c', '#2ecc71'], edgecolor='black', rot=0)
-            ax.set_title("Średni poziom bólu w zależności od odcinka kręgosłupa")
-            ax.set_xlabel("Odcinek kręgosłupa")
-            ax.set_ylabel("Średnia skala bólu")
+            ax.grid(True, linestyle='--', alpha=0.6)
         else:
-            ax.text(0.5, 0.5, "Wybierz poprawny wykres", horizontalalignment='center', verticalalignment='center')
+            ax.text(0.5, 0.5, "Brak danych dla wybranego filtra", horizontalalignment='center',
+                    verticalalignment='center', transform=ax.transAxes)
 
         canvas.draw()
 
@@ -164,6 +153,9 @@ przycisk_aktualizuj.pack(side="left", padx=10)
 
 
 przycisk_aktualizuj.config(command=rysuj_wykres)
+
+wybor_wykresu.bind("<<ComboboxSelected>>", rysuj_wykres)
+wybor_grupy.bind("<<ComboboxSelected>>", rysuj_wykres)
 
 
 def zamknij_aplikacje():
