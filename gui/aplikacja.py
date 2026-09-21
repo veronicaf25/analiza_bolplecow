@@ -124,26 +124,20 @@ def rysuj_wykres(event=None):
             ax.text(0.5, 0.5, "Brak danych dla wybranego filtra", horizontalalignment='center',
                     verticalalignment='center', transform=ax.transAxes)
 
+
     elif typ == "Płeć a ból":
-        kobiety = dane_f[dane_f['Plec'] == 'Kobieta']['Skala_Bolu_1_10'].dropna().values
-        mezczyzni = dane_f[dane_f['Plec'] == 'Mężczyzna']['Skala_Bolu_1_10'].dropna().values
 
-        dane_boxplot = [kobiety, mezczyzni]
-        etykiety_plec = ['Kobiety', 'Mężczyźni']
+        srednie_bolu = dane_f.groupby('Plec')['Skala_Bolu_1_10'].mean()
 
-        if len(kobiety) > 0 or len(mezczyzni) > 0:
-            ax.boxplot(dane_boxplot, tick_labels=etykiety_plec)
-            ax.set_title("Porównanie poziomu bólu (Kobiety vs Mężczyźni)")
+        if not srednie_bolu.empty:
+            ax.bar(srednie_bolu.index, srednie_bolu.values, color=['#e74c3c', '#3498db'], edgecolor='black', alpha=0.85)
+            ax.set_title("Średni poziom bólu w zależności od płci")
             ax.set_xlabel("Płeć")
-            ax.set_ylabel("Skala bólu (1-10)")
-            ax.grid(True, linestyle='--', alpha=0.6)
+            ax.set_ylabel("Średnia skala bólu (1-10)")
+            ax.grid(axis='y', linestyle='--', alpha=0.6)
         else:
-            ax.text(0.5, 0.5, "Brak danych dla wybranego filtra", horizontalalignment='center',
+             ax.text(0.5, 0.5, "Brak danych dla wybranego filtra", horizontalalignment='center',
                     verticalalignment='center', transform=ax.transAxes)
-
-    else:
-        ax.text(0.5, 0.5, "Wybierz poprawny wykres", horizontalalignment='center', verticalalignment='center',
-                transform=ax.transAxes)
 
     canvas.draw()
 
