@@ -2,7 +2,6 @@ import tkinter as tk
 import pandas as pd
 import matplotlib.pyplot as plt
 from tkinter import messagebox
-
 from tkinter import ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
@@ -25,49 +24,36 @@ styl.theme_use('clam')  # Użycie nowoczesnego motywu
 ramka_gorna = ttk.Frame(okno, padding="10")
 ramka_gorna.pack(fill="x", padx=10, pady=10)
 
-# Etykieta informacyjna dla panelu sterowania
+# 1. Wybór typu wykresu (Etykieta + Lista rozwijana + .pack())
 etykieta_wykres = ttk.Label(ramka_gorna, text="Wybierz typ wykresu:")
 etykieta_wykres.pack(side="left", padx=5)
 
-# Lista rozwijana do wyboru typu wykresu
 wybor_wykresu = ttk.Combobox(
     ramka_gorna,
-    values=["Wiek a ból", "Rozkład poziomu bólu", "Korelacja cech", "Średnia wg grupy"],
+    values=["Wiek a ból", "Płeć a ból", "Histogram poziomu bólu"],
     state="readonly"
 )
+wybor_wykresu.set("Wiek a ból")  # Domyślny wybór przy starcie
+wybor_wykresu.pack(side="left", padx=5)  # <--- To sprawia, że lista jest widoczna!
 
-wybor_wykresu.set("Wszyscy")
-wybor_wykresu.pack(side="left", padx=5)
-
-# Etykieta i lista rozwijana do filtrowania danych pacjentów
+# 2. Odcinek kręgosłupa (Etykieta + Lista rozwijana)
 etykieta_grupa = ttk.Label(ramka_gorna, text="Odcinek kręgosłupa:")
-etykieta_grupa.pack(side="left", padx=(15, 5)) # Dodajemy większy odstęp z lewej strony (15px), żeby oddzielić filtry
+etykieta_grupa.pack(side="left", padx=(15, 5))
 
-# Lista rozwijana do filtrowania po odcinku kręgosłupa
-# 1. Tworzenie listy rozwijanej
 wybor_grupy = ttk.Combobox(
     ramka_gorna,
     values=["Wszyscy", "szyjny", "piersiowy", "lędźwiowy"],
     state="readonly"
 )
+wybor_grupy.set("Wszyscy")
+wybor_grupy.pack(side="left", padx=5)
 
 
-wybor_grupy.set("Wszyscy")  # Domyślny wybór przy starcie
-wybor_grupy.pack(side="left", padx=5)  # Umieszcza element w oknie (lub użyj .grid(), jeśli tak układasz resztę)
-
-
-# 1. Najpierw definiujemy funkcję eksportu:
 def eksportuj_dane():
-    if grupa == "Ćwiczą regularnie":
-        dane_f = df[df['Regularne_Cwiczenia'] == 'Tak']
-    elif grupa == "Nie ćwiczą":
-        dane_f = df[df['Regularne_Cwiczenia'] == 'Nie']
-    else:
-        dane_f = df
-
-    dane_eksport.to_csv("raport_z_analizy.csv", index=False)
+    df.to_csv("raport_z_analizy.csv", index=False)
     etykieta_status.config(text="Status: Wyeksportowano dane do pliku CSV!")
     print("Zapisano dane do pliku raport_z_analizy.csv!")
+
 
 def resetuj_filtry():
     wybor_wykresu.current(0)
@@ -75,36 +61,39 @@ def resetuj_filtry():
     rysuj_wykres()
     etykieta_status.config(text="Status: Zresetowano filtry")
 
+
 def pokaz_informacje():
-    messagebox.showinfo("O programie", "Aplikacja do analizy danych pacjentów z bólem pleców.\nProjekt inżynierski / zaliczeniowy.")
+    messagebox.showinfo("O programie",
+                        "Aplikacja do analizy danych pacjentów z bólem pleców.\nProjekt inżynierski / zaliczeniowy.")
     etykieta_status.config(text="Status: Wyświetlono informacje o programie")
 
 
 def rysuj_wykres(event=None):
-        typ = wybor_wykresu.get()
-        grupa = wybor_grupy.get()
+    typ = wybor_wykresu.get()
+    grupa = wybor_grupy.get()
 
-        # Filtrowanie danych w zależności od wyboru w liście rozwijanej
-        if grupa == "szyjny":
-            dane_f = df[df['Odcinek'] == 'szyjny']
-        elif grupa == "piersiowy":
-            dane_f = df[df['Odcinek'] == 'piersiowy']
-        elif grupa == "lędźwiowy":
-            dane_f = df[df['Odcinek'] == 'lędźwiowy']
-        else:
-            dane_f = df  # Wszyscy
+    # Filtrowanie danych w zależności od wyboru w liście rozwijanej
+    if grupa == "szyjny":
+        dane_f = df[df['Odcinek'] == 'szyjny']
+    elif grupa == "piersiowy":
+        dane_f = df[df['Odcinek'] == 'piersiowy']
+    elif grupa == "lędźwiowy":
+        dane_f = df[df['Odcinek'] == 'lędźwiowy']
+    else:
+        dane_f = df  # Wszyscy
 
-        liczba_pacjentow = len(dane_f)
-        sredni_wiek = dane_f['Wiek'].mean() if liczba_pacjentow > 0 else 0
+    liczba_pacjentow = len(dane_f)
+    sredni_wiek = dane_f['Wiek'].mean() if liczba_pacjentow > 0 else 0
 
-        etykieta_liczba_pacjentow.config(text=f"Liczba pacjentów: {liczba_pacjentow}")
-        etykieta_sredni_wiek.config(text=f"Średni wiek: {sredni_wiek:.1f}")
+    etykieta_liczba_pacjentow.config(text=f"Liczba pacjentów: {liczba_pacjentow}")
+    etykieta_sredni_wiek.config(text=f"Średni wiek: {sredni_wiek:.1f}")
 
-        ax.clear()
+    ax.clear()
 
-        # 4 różne typy wykresów zgodnie z wytycznymi
-        if typ == "Wiek a ból":
-              dane_f['Przedzial_Wiekowy'] = pd.cut(
+    # Obsługa poszczególnych typów wykresów
+    if typ == "Wiek a ból":
+        dane_f = dane_f.copy()
+        dane_f['Przedzial_Wiekowy'] = pd.cut(
             dane_f['Wiek'],
             bins=[0, 30, 40, 50, 60, 100],
             labels=['<30', '30-40', '41-50', '51-60', '60+']
@@ -124,7 +113,40 @@ def rysuj_wykres(event=None):
             ax.text(0.5, 0.5, "Brak danych dla wybranego filtra", horizontalalignment='center',
                     verticalalignment='center', transform=ax.transAxes)
 
-        canvas.draw()
+    elif typ == "Histogram poziomu bólu":
+        if not dane_f.empty:
+            ax.hist(dane_f['Skala_Bolu_1_10'], bins=8, color='#e74c3c', edgecolor='black', alpha=0.85)
+            ax.set_title("Histogram poziomu bólu pacjentów")
+            ax.set_xlabel("Skala bólu (1-10)")
+            ax.set_ylabel("Liczba pacjentów")
+            ax.grid(axis='y', linestyle='--', alpha=0.6)
+        else:
+            ax.text(0.5, 0.5, "Brak danych dla wybranego filtra", horizontalalignment='center',
+                    verticalalignment='center', transform=ax.transAxes)
+
+    elif typ == "Płeć a ból":
+        kobiety = dane_f[dane_f['Plec'] == 'Kobieta']['Skala_Bolu_1_10'].dropna().values
+        mezczyzni = dane_f[dane_f['Plec'] == 'Mężczyzna']['Skala_Bolu_1_10'].dropna().values
+
+        dane_boxplot = [kobiety, mezczyzni]
+        etykiety_plec = ['Kobiety', 'Mężczyźni']
+
+        if len(kobiety) > 0 or len(mezczyzni) > 0:
+            ax.boxplot(dane_boxplot, tick_labels=etykiety_plec)
+            ax.set_title("Porównanie poziomu bólu (Kobiety vs Mężczyźni)")
+            ax.set_xlabel("Płeć")
+            ax.set_ylabel("Skala bólu (1-10)")
+            ax.grid(True, linestyle='--', alpha=0.6)
+        else:
+            ax.text(0.5, 0.5, "Brak danych dla wybranego filtra", horizontalalignment='center',
+                    verticalalignment='center', transform=ax.transAxes)
+
+    else:
+        ax.text(0.5, 0.5, "Wybierz poprawny wykres", horizontalalignment='center', verticalalignment='center',
+                transform=ax.transAxes)
+
+    canvas.draw()
+
 
 # Ramka na wykres w środkowej części okna
 ramka_srodek = ttk.Frame(okno, padding="10")
@@ -147,21 +169,23 @@ etykieta_liczba_pacjentow.pack(side="left", padx=15)
 etykieta_sredni_wiek = ttk.Label(ramka_dolna, text="Średni wiek: -", font=("Arial", 10))
 etykieta_sredni_wiek.pack(side="left", padx=15)
 
-
-przycisk_aktualizuj = ttk.Button(ramka_gorna, text="Generuj wykres")
+# Przycisk generowania wykresu
+przycisk_aktualizuj = ttk.Button(ramka_gorna, text="Generuj wykres", command=rysuj_wykres)
 przycisk_aktualizuj.pack(side="left", padx=10)
 
-
-przycisk_aktualizuj.config(command=rysuj_wykres)
-
+# Powiązanie zdarzeń z listami rozwijanymi
 wybor_wykresu.bind("<<ComboboxSelected>>", rysuj_wykres)
 wybor_grupy.bind("<<ComboboxSelected>>", rysuj_wykres)
 
 
 def zamknij_aplikacje():
-        print("Zamykanie aplikacji...")
-        okno.destroy()
+    print("Zamykanie aplikacji...")
+    okno.destroy()
+
 
 okno.protocol("WM_DELETE_WINDOW", zamknij_aplikacje)
-okno.mainloop()
 
+# Wstępne wygenerowanie wykresu przy starcie
+rysuj_wykres()
+
+okno.mainloop()
