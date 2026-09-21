@@ -163,9 +163,6 @@ etykieta_liczba_pacjentow.pack(side="left", padx=15)
 etykieta_sredni_wiek = ttk.Label(ramka_dolna, text="Średni wiek: -", font=("Arial", 10))
 etykieta_sredni_wiek.pack(side="left", padx=15)
 
-# Przycisk generowania wykresu
-przycisk_aktualizuj = ttk.Button(ramka_gorna, text="Generuj wykres", command=rysuj_wykres)
-przycisk_aktualizuj.pack(side="left", padx=10)
 
 # Powiązanie zdarzeń z listami rozwijanymi
 wybor_wykresu.bind("<<ComboboxSelected>>", rysuj_wykres)
