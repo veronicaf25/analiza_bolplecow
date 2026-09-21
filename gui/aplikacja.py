@@ -40,7 +40,7 @@ wybor_wykresu.set("Wszyscy")
 wybor_wykresu.pack(side="left", padx=5)
 
 # Etykieta i lista rozwijana do filtrowania danych pacjentów
-etykieta_grupa = ttk.Label(ramka_gorna, text="Lokalizacja:")
+etykieta_grupa = ttk.Label(ramka_gorna, text="Odcinek kręgosłupa:")
 etykieta_grupa.pack(side="left", padx=(15, 5)) # Dodajemy większy odstęp z lewej strony (15px), żeby oddzielić filtry
 
 # Lista rozwijana do filtrowania po odcinku kręgosłupa
