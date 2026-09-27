@@ -54,9 +54,9 @@ wybor_cwiczen = ttk.Combobox(ramka_gorna, values=["Wszyscy", "Tak", "Nie"], stat
 wybor_cwiczen.set("Wszyscy")
 wybor_cwiczen.pack(side="left", padx=5)
 
-etykieta_styl = ttk.Label(ramka_gorna, text="Styl pracy:")
+etykieta_styl = ttk.Label(ramka_gorna, text="Praca siedząca:")
 etykieta_styl.pack(side="left", padx=(10, 2))
-wybor_stylu = ttk.Combobox(ramka_gorna, values=["Wszyscy", "siedzący", "stojący", "mieszany"], state="readonly", width=11)
+wybor_stylu = ttk.Combobox(ramka_gorna, values=["Wszyscy", "Tak", "Nie"], state="readonly", width=8)
 wybor_stylu.set("Wszyscy")
 wybor_stylu.pack(side="left", padx=5)
 
@@ -100,6 +100,14 @@ def rysuj_wykres(event=None):
     etykieta_sredni_wiek.config(text=f"Średni wiek: {sredni_wiek:.1f}")
 
     ax.clear()
+
+    aktywnosc = wybor_cwiczen.get()
+    styl_pracy = wybor_stylu.get()
+
+    if aktywnosc != "Wszyscy":
+        dane_f = dane_f[dane_f['Regularne_cwiczenia'] == aktywnosc]
+    if styl_pracy != "Wszyscy":
+        dane_f = dane_f[dane_f['Praca_siedzaca'] == styl_pracy]
 
     # Obsługa poszczególnych typów wykresów
     if typ == "Wiek a ból":
@@ -179,6 +187,8 @@ etykieta_sredni_wiek.pack(side="left", padx=15)
 wybor_wykresu.bind("<<ComboboxSelected>>", rysuj_wykres)
 wybor_grupy.bind("<<ComboboxSelected>>", rysuj_wykres)
 
+wybor_cwiczen.bind("<<ComboboxSelected>>", rysuj_wykres)
+wybor_stylu.bind("<<ComboboxSelected>>", rysuj_wykres)
 
 def zamknij_aplikacje():
     print("Zamykanie aplikacji...")
