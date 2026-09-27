@@ -14,7 +14,7 @@ except FileNotFoundError:
 # Stworzenie głównego okna aplikacji
 okno = tk.Tk()
 okno.title("Analiza pacjentów z bólem pleców")
-okno.geometry("900x750")
+okno.geometry("1100x750")
 
 # Konfiguracja nowoczesnego stylu interfejsu
 styl = ttk.Style()
