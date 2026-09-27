@@ -97,86 +97,94 @@ def pokaz_informacje():
                         "Aplikacja do analizy danych pacjentów z bólem pleców.\nProjekt inżynierski / zaliczeniowy.")
     etykieta_status.config(text="Status: Wyświetlono informacje o programie")
 
+    def rysuj_wykres(event=None):
+        typ = wybor_wykresu.get()
+        grupa = wybor_grupy.get()
+        aktywnosc = wybor_cwiczen.get()
+        styl_pracy = wybor_stylu.get()
 
-def rysuj_wykres(event=None):
-    typ = wybor_wykresu.get()
-    grupa = wybor_grupy.get()
+        # Klonowanie danych i filtrowanie wielokryteriowe
+        dane_f = df.copy()
 
-    # Filtrowanie danych w zależności od wyboru w liście rozwijanej
-    if grupa == "szyjny":
-        dane_f = df[df['Odcinek'] == 'szyjny']
-    elif grupa == "piersiowy":
-        dane_f = df[df['Odcinek'] == 'piersiowy']
-    elif grupa == "lędźwiowy":
-        dane_f = df[df['Odcinek'] == 'lędźwiowy']
-    else:
-        dane_f = df  # Wszyscy
+        if grupa != "Wszyscy":
+            dane_f = dane_f[dane_f['Odcinek'] == grupa]
+        if aktywnosc != "Wszyscy":
+            dane_f = dane_f[dane_f['Regularne_cwiczenia'] == aktywnosc]
+        if styl_pracy != "Wszyscy":
+            dane_f = dane_f[dane_f['Praca_siedzaca'] == styl_pracy]
 
-    liczba_pacjentow = len(dane_f)
-    sredni_wiek = dane_f['Wiek'].mean() if liczba_pacjentow > 0 else 0
+        # Liczenie statystyk na podstawie przefiltrowanych danych
+        liczba_pacjentow = len(dane_f)
+        sredni_wiek = dane_f['Wiek'].mean() if liczba_pacjentow > 0 else 0
 
-    etykieta_liczba_pacjentow.config(text=f"Liczba pacjentów: {liczba_pacjentow}")
-    etykieta_sredni_wiek.config(text=f"Średni wiek: {sredni_wiek:.1f}")
+        etykieta_liczba_pacjentow.config(text=f"Liczba pacjentów: {liczba_pacjentow}")
+        etykieta_sredni_wiek.config(text=f"Średni wiek: {sredni_wiek:.1f}")
 
-    ax.clear()
+        ax.clear()
 
-    aktywnosc = wybor_cwiczen.get()
-    styl_pracy = wybor_stylu.get()
+        # Obsługa poszczególnych typów wykresów
+        if typ == "Wiek a ból":
+            dane_f_kopia = dane_f.copy()
+            dane_f_kopia['Przedzial_Wiekowy'] = pd.cut(
+                dane_f_kopia['Wiek'],
+                bins=[0, 30, 40, 50, 60, 100],
+                labels=['<30', '30-40', '41-50', '51-60', '60+']
+            )
 
-    if aktywnosc != "Wszyscy":
-        dane_f = dane_f[dane_f['Regularne_cwiczenia'] == aktywnosc]
-    if styl_pracy != "Wszyscy":
-        dane_f = dane_f[dane_f['Praca_siedzaca'] == styl_pracy]
+            if not dane_f_kopia.empty:
+                grupy_danych = [g_df['Skala_Bolu_1_10'].dropna().values for _, g_df in
+                                dane_f_kopia.groupby('Przedzial_Wiekowy', observed=True)]
+                etykiety = [str(nazwa) for nazwa, _ in dane_f_kopia.groupby('Przedzial_Wiekowy', observed=True)]
 
-    # Obsługa poszczególnych typów wykresów
-    if typ == "Wiek a ból":
-        dane_f = dane_f.copy()
-        dane_f['Przedzial_Wiekowy'] = pd.cut(
-            dane_f['Wiek'],
-            bins=[0, 30, 40, 50, 60, 100],
-            labels=['<30', '30-40', '41-50', '51-60', '60+']
-        )
+                ax.boxplot(grupy_danych, tick_labels=etykiety)
+                ax.set_title("Rozkład poziomu bólu w grupach wiekowych")
+                ax.set_xlabel("Grupa wiekowa")
+                ax.set_ylabel("Skala bólu (1-10)")
+                ax.grid(True, linestyle='--', alpha=0.6)
+            else:
+                ax.text(0.5, 0.5, "Brak danych dla wybranego filtra", horizontalalignment='center',
+                        verticalalignment='center', transform=ax.transAxes)
 
-        if not dane_f.empty:
-            grupy_danych = [g_df['Skala_Bolu_1_10'].dropna().values for _, g_df in
-                            dane_f.groupby('Przedzial_Wiekowy', observed=True)]
-            etykiety = [str(nazwa) for nazwa, _ in dane_f.groupby('Przedzial_Wiekowy', observed=True)]
+        elif typ == "Histogram poziomu bólu":
+            if not dane_f.empty:
+                ax.hist(dane_f['Skala_Bolu_1_10'], bins=8, color='#e74c3c', edgecolor='black', alpha=0.85)
+                ax.set_title("Histogram poziomu bólu pacjentów")
+                ax.set_xlabel("Skala bólu (1-10)")
+                ax.set_ylabel("Liczba pacjentów")
+                ax.grid(axis='y', linestyle='--', alpha=0.6)
+            else:
+                ax.text(0.5, 0.5, "Brak danych dla wybranego filtra", horizontalalignment='center',
+                        verticalalignment='center', transform=ax.transAxes)
 
-            ax.boxplot(grupy_danych, tick_labels=etykiety)
-            ax.set_title("Rozkład poziomu bólu w grupach wiekowych")
-            ax.set_xlabel("Grupa wiekowa")
-            ax.set_ylabel("Skala bólu (1-10)")
-            ax.grid(True, linestyle='--', alpha=0.6)
-        else:
-            ax.text(0.5, 0.5, "Brak danych dla wybranego filtra", horizontalalignment='center',
-                    verticalalignment='center', transform=ax.transAxes)
+        elif typ == "Płeć a ból":
+            srednie_bolu = dane_f.groupby('Plec')['Skala_Bolu_1_10'].mean()
 
-    elif typ == "Histogram poziomu bólu":
-        if not dane_f.empty:
-            ax.hist(dane_f['Skala_Bolu_1_10'], bins=8, color='#e74c3c', edgecolor='black', alpha=0.85)
-            ax.set_title("Histogram poziomu bólu pacjentów")
-            ax.set_xlabel("Skala bólu (1-10)")
-            ax.set_ylabel("Liczba pacjentów")
-            ax.grid(axis='y', linestyle='--', alpha=0.6)
-        else:
-            ax.text(0.5, 0.5, "Brak danych dla wybranego filtra", horizontalalignment='center',
-                    verticalalignment='center', transform=ax.transAxes)
+            if not srednie_bolu.empty:
+                ax.bar(srednie_bolu.index, srednie_bolu.values, color=['#e74c3c', '#3498db'], edgecolor='black',
+                       alpha=0.85)
+                ax.set_title("Średni poziom bólu w zależności od płci")
+                ax.set_xlabel("Płeć")
+                ax.set_ylabel("Średnia skala bólu (1-10)")
+                ax.grid(axis='y', linestyle='--', alpha=0.6)
+            else:
+                ax.text(0.5, 0.5, "Brak danych dla wybranego filtra", horizontalalignment='center',
+                        verticalalignment='center', transform=ax.transAxes)
 
+        canvas.draw()
 
-    elif typ == "Płeć a ból":
+        # Dynamiczne uzupełnianie tabeli filtrowanymi danymi
+        for row in tabela.get_children():
+            tabela.delete(row)
 
-        srednie_bolu = dane_f.groupby('Plec')['Skala_Bolu_1_10'].mean()
-
-        if not srednie_bolu.empty:
-            ax.bar(srednie_bolu.index, srednie_bolu.values, color=['#e74c3c', '#3498db'], edgecolor='black', alpha=0.85)
-            ax.set_title("Średni poziom bólu w zależności od płci")
-            ax.set_xlabel("Płeć")
-            ax.set_ylabel("Średnia skala bólu (1-10)")
-            ax.grid(axis='y', linestyle='--', alpha=0.6)
-        else:
-             ax.text(0.5, 0.5, "Brak danych dla wybranego filtra", horizontalalignment='center',
-                    verticalalignment='center', transform=ax.transAxes)
-
+        for _, row_data in dane_f.iterrows():
+            tabela.insert("", "end", values=(
+                row_data.get('Wiek', '-'),
+                row_data.get('Plec', '-'),
+                row_data.get('Odcinek', '-'),
+                row_data.get('Skala_Bolu_1_10', '-'),
+                row_data.get('Regularne_cwiczenia', '-'),
+                row_data.get('Praca_siedzaca', '-')
+            ))
     canvas.draw()
 
 
@@ -187,6 +195,22 @@ ramka_srodek.pack(fill="both", expand=True, padx=10, pady=5)
 fig, ax = plt.subplots(figsize=(6, 4), dpi=100)
 canvas = FigureCanvasTkAgg(fig, master=ramka_srodek)
 canvas.get_tk_widget().pack(fill="both", expand=True)
+
+# Ramka na tabelę (tworzymy ją w oknie, ale domyślnie jest ukryta, bo startujemy od wykresu)
+ramka_tabela = ttk.LabelFrame(okno, text="Tabela filtrowanych pacjentów", padding="5")
+
+kolumny = ('Wiek', 'Plec', 'Odcinek', 'Skala_Bolu', 'Cwiczenia', 'Praca_siedzaca')
+tabela = ttk.Treeview(ramka_tabela, columns=kolumny, show='headings', height=10)
+
+for col in kolumny:
+    tabela.heading(col, text=col)
+    tabela.column(col, width=100, anchor='center')
+
+tabela.pack(side="left", fill="both", expand=True)
+
+scrollbar = ttk.Scrollbar(ramka_tabela, orient="vertical", command=tabela.yview)
+scrollbar.pack(side="right", fill="y")
+tabela.configure(yscrollcommand=scrollbar.set)
 
 # Dolna ramka na statystyki
 ramka_dolna = ttk.LabelFrame(okno, text="Podsumowanie statystyczne", padding="10")
@@ -209,7 +233,7 @@ wybor_grupy.bind("<<ComboboxSelected>>", rysuj_wykres)
 wybor_cwiczen.bind("<<ComboboxSelected>>", rysuj_wykres)
 wybor_stylu.bind("<<ComboboxSelected>>", rysuj_wykres)
 
-wybor_widoku.bind("<<ComboboxSelected>>", zmien_widok)
+
 
 def zamknij_aplikacje():
     print("Zamykanie aplikacji...")
