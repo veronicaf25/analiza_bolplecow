@@ -76,6 +76,14 @@ def eksportuj_dane():
     etykieta_status.config(text="Status: Wyeksportowano dane do pliku CSV!")
     print("Zapisano dane do pliku raport_z_analizy.csv!")
 
+def zmien_widok(event=None):
+    wybrany = wybor_widoku.get()
+    if wybrany == "Wykres":
+        ramka_tabela.pack_forget()  # Ukrywamy tabelę
+        ramka_srodek.pack(fill="both", expand=True, padx=10, pady=5)  # Pokazujemy wykres
+    else:
+        ramka_srodek.pack_forget()  # Ukrywamy wykres
+        ramka_tabela.pack(fill="both", expand=True, padx=10, pady=5)  # Pokazujemy tabelę
 
 def resetuj_filtry():
     wybor_wykresu.current(0)
