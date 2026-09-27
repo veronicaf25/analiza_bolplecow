@@ -209,6 +209,8 @@ wybor_grupy.bind("<<ComboboxSelected>>", rysuj_wykres)
 wybor_cwiczen.bind("<<ComboboxSelected>>", rysuj_wykres)
 wybor_stylu.bind("<<ComboboxSelected>>", rysuj_wykres)
 
+wybor_widoku.bind("<<ComboboxSelected>>", zmien_widok)
+
 def zamknij_aplikacje():
     print("Zamykanie aplikacji...")
     okno.destroy()
