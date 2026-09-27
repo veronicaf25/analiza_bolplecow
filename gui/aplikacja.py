@@ -29,9 +29,9 @@ etykieta_wykres = ttk.Label(ramka_gorna, text="Wykres:")
 etykieta_wykres.pack(side="left", padx=2)
 wybor_wykresu = ttk.Combobox(
     ramka_gorna,
-    values=["Wiek a ból", "Płeć a ból", "Histogram poziomu bólu"],
+    values=["Wiek a ból", "Płeć a ból", "Histogram poziomu bólu", "Wykres rozrzutu (Wiek vs Ból)"],
     state="readonly",
-    width=16
+    width=26
 )
 wybor_wykresu.set("Wiek a ból")
 wybor_wykresu.pack(side="left", padx=5)
@@ -178,7 +178,27 @@ def rysuj_wykres(event=None):
             ax.grid(axis='y', linestyle='--', alpha=0.6)
         else:
             ax.text(0.5, 0.5, "Brak danych dla wybranego filtra", horizontalalignment='center',
+
+
                     verticalalignment='center', transform=ax.transAxes)
+
+    elif typ == "Wykres rozrzutu (Wiek vs Ból)":
+        if not dane_f.empty and len(dane_f) > 1:
+            x = dane_f['Wiek']
+            y = dane_f['Skala_Bolu_1_10']
+
+            # Obliczenie współczynnika korelacji Pearsona
+            korelacja = x.corr(y)
+
+            ax.scatter(x, y, color='#2980b9', alpha=0.7, edgecolors='black', s=60)
+            ax.set_title(f"Zależność wieku od bólu (Korelacja r = {korelacja:.2f})")
+            ax.set_xlabel("Wiek (lata)")
+            ax.set_ylabel("Skala bólu (1-10)")
+            ax.grid(True, linestyle='--', alpha=0.6)
+        else:
+            ax.text(0.5, 0.5, "Za mało danych do analizy korelacji", horizontalalignment='center',
+                    verticalalignment='center', transform=ax.transAxes)
+
 
     elif typ == "Płeć a ból":
         srednie_bolu = dane_f.groupby('Plec')['Skala_Bolu_1_10'].mean()
