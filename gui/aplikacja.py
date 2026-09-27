@@ -48,6 +48,17 @@ wybor_grupy = ttk.Combobox(
 wybor_grupy.set("Wszyscy")
 wybor_grupy.pack(side="left", padx=5)
 
+etykieta_cwiczenia = ttk.Label(ramka_gorna, text="Aktywność:")
+etykieta_cwiczenia.pack(side="left", padx=(10, 2))
+wybor_cwiczen = ttk.Combobox(ramka_gorna, values=["Wszyscy", "Tak", "Nie"], state="readonly", width=8)
+wybor_cwiczen.set("Wszyscy")
+wybor_cwiczen.pack(side="left", padx=5)
+
+etykieta_styl = ttk.Label(ramka_gorna, text="Styl pracy:")
+etykieta_styl.pack(side="left", padx=(10, 2))
+wybor_stylu = ttk.Combobox(ramka_gorna, values=["Wszyscy", "siedzący", "stojący", "mieszany"], state="readonly", width=11)
+wybor_stylu.set("Wszyscy")
+wybor_stylu.pack(side="left", padx=5)
 
 def eksportuj_dane():
     df.to_csv("raport_z_analizy.csv", index=False)
