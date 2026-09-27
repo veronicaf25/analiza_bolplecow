@@ -48,6 +48,17 @@ wybor_grupy = ttk.Combobox(
 wybor_grupy.set("Wszyscy")
 wybor_grupy.pack(side="left", padx=5)
 
+etykieta_widok = ttk.Label(ramka_gorna, text="Widok:")
+etykieta_widok.pack(side="left", padx=(15, 2))
+wybor_widoku = ttk.Combobox(
+    ramka_gorna,
+    values=["Wykres", "Tabela"],
+    state="readonly",
+    width=10
+)
+wybor_widoku.set("Wykres")  # Domyślnie startujemy od wykresu
+wybor_widoku.pack(side="left", padx=5)
+
 etykieta_cwiczenia = ttk.Label(ramka_gorna, text="Aktywność:")
 etykieta_cwiczenia.pack(side="left", padx=(10, 2))
 wybor_cwiczen = ttk.Combobox(ramka_gorna, values=["Wszyscy", "Tak", "Nie"], state="readonly", width=8)
