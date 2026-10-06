@@ -13,7 +13,7 @@ except FileNotFoundError:
 # Stworzenie głównego okna aplikacji
 okno = tk.Tk()
 okno.title("Analiza pacjentów z bólem pleców")
-okno.geometry("1100x750")
+okno.geometry("1220x750")
 
 # Konfiguracja nowoczesnego stylu interfejsu
 styl = ttk.Style()
@@ -30,7 +30,7 @@ wybor_wykresu = ttk.Combobox(
     ramka_gorna,
     values=["Wiek a ból", "Płeć a ból", "Histogram poziomu bólu", "Wykres rozrzutu (z podziałem na płeć)"],
     state="readonly",
-    width=30
+    width=28
 )
 wybor_wykresu.set("Wiek a ból")
 wybor_wykresu.pack(side="left", padx=5)
@@ -72,6 +72,22 @@ etykieta_styl.pack(side="left", padx=(10, 2))
 wybor_stylu = ttk.Combobox(ramka_gorna, values=["Wszyscy", "Tak", "Nie"], state="readonly", width=8)
 wybor_stylu.set("Wszyscy")
 wybor_stylu.pack(side="left", padx=5)
+
+
+def resetuj_filtry():
+    wybor_grupy.set("Wszyscy")
+    wybor_cwiczen.set("Wszyscy")
+    wybor_stylu.set("Wszyscy")
+    wybor_wykresu.set("Wiek a ból")
+    wybor_widoku.set("Wykres")
+    zmien_widok()
+    rysuj_wykres()
+    etykieta_status.config(text="Status: Zresetowano filtry")
+
+
+# Przycisk resetowania filtrów po prawej stronie
+przycisk_reset = ttk.Button(ramka_gorna, text="🔄 Resetuj filtry", command=resetuj_filtry, width=15)
+przycisk_reset.pack(side="right", padx=5)
 
 
 # --- RAMKA NA WYKRES (Środek - domyślnie widoczna) ---
