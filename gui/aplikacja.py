@@ -14,7 +14,7 @@ except FileNotFoundError:
 # Stworzenie głównego okna aplikacji
 okno = tk.Tk()
 okno.title("Analiza pacjentów z bólem pleców")
-okno.geometry("1100x750")
+okno.geometry("1220x750")
 
 # Konfiguracja nowoczesnego stylu interfejsu
 styl = ttk.Style()
@@ -24,14 +24,20 @@ styl.theme_use('clam')
 ramka_gorna = ttk.Frame(okno, padding="10")
 ramka_gorna.pack(fill="x", padx=10, pady=10)
 
-# 1. Wybór typu wykresu
+# 1. Wybór typu wykresu (z dodaną opcją aktywności fizycznej)
 etykieta_wykres = ttk.Label(ramka_gorna, text="Wykres:")
 etykieta_wykres.pack(side="left", padx=2)
 wybor_wykresu = ttk.Combobox(
     ramka_gorna,
-    values=["Wiek a ból", "Płeć a ból", "Histogram poziomu bólu", "Wykres rozrzutu (Wiek vs Ból)"],
+    values=[
+        "Wiek a ból",
+        "Płeć a ból",
+        "Histogram poziomu bólu",
+        "Wykres rozrzutu (Wiek vs Ból)",
+        "Aktywność fizyczna a ból"
+    ],
     state="readonly",
-    width=26
+    width=28
 )
 wybor_wykresu.set("Wiek a ból")
 wybor_wykresu.pack(side="left", padx=5)
@@ -55,7 +61,7 @@ wybor_widoku = ttk.Combobox(
     ramka_gorna,
     values=["Wykres", "Tabela"],
     state="readonly",
-    width=10
+    width=9
 )
 wybor_widoku.set("Wykres")
 wybor_widoku.pack(side="left", padx=5)
@@ -75,14 +81,20 @@ wybor_stylu.set("Wszyscy")
 wybor_stylu.pack(side="left", padx=5)
 
 
-def eksportuj_dane():
-    df.to_csv("raport_z_analizy.csv", index=False)
-    etykieta_status.config(text="Status: Wyeksportowano dane do pliku CSV!")
+def resetuj_filtry():
+    wybor_grupy.set("Wszyscy")
+    wybor_cwiczen.set("Wszyscy")
+    wybor_stylu.set("Wszyscy")
+    wybor_wykresu.set("Wiek a ból")
+    wybor_widoku.set("Wykres")
+    zmien_widok()
+    rysuj_wykres()
+    etykieta_status.config(text="Status: Zresetowano filtry")
 
 
-def pokaz_informacje():
-    messagebox.showinfo("O programie", "Aplikacja do analizy danych pacjentów z bólem pleców.\nProjekt inżynierski.")
-    etykieta_status.config(text="Status: Wyświetlono informacje")
+# Przycisk resetowania filtrów po prawej stronie
+przycisk_reset = ttk.Button(ramka_gorna, text="🔄 Resetuj filtry", command=resetuj_filtry, width=15)
+przycisk_reset.pack(side="right", padx=5)
 
 
 # --- RAMKA NA WYKRES (Środek - domyślnie widoczna) ---
@@ -137,12 +149,14 @@ def rysuj_wykres(event=None):
     if styl_pracy != "Wszyscy":
         dane_f = dane_f[dane_f['Praca_siedzaca'] == styl_pracy]
 
-    # Statystyki na dole
+    # Statystyki na dole (Średnia i Mediana)
     liczba_pacjentow = len(dane_f)
     sredni_wiek = dane_f['Wiek'].mean() if liczba_pacjentow > 0 else 0
+    mediana_wieku = dane_f['Wiek'].median() if liczba_pacjentow > 0 else 0
 
     etykieta_liczba_pacjentow.config(text=f"Liczba pacjentów: {liczba_pacjentow}")
     etykieta_sredni_wiek.config(text=f"Średni wiek: {sredni_wiek:.1f}")
+    etykieta_mediana_wieku.config(text=f"Mediana wieku: {mediana_wieku:.1f}")
 
     # Rysowanie wykresu
     ax.clear()
@@ -178,8 +192,6 @@ def rysuj_wykres(event=None):
             ax.grid(axis='y', linestyle='--', alpha=0.6)
         else:
             ax.text(0.5, 0.5, "Brak danych dla wybranego filtra", horizontalalignment='center',
-
-
                     verticalalignment='center', transform=ax.transAxes)
 
     elif typ == "Wykres rozrzutu (Wiek vs Ból)":
@@ -199,7 +211,6 @@ def rysuj_wykres(event=None):
             ax.text(0.5, 0.5, "Za mało danych do analizy korelacji", horizontalalignment='center',
                     verticalalignment='center', transform=ax.transAxes)
 
-
     elif typ == "Płeć a ból":
         srednie_bolu = dane_f.groupby('Plec')['Skala_Bolu_1_10'].mean()
 
@@ -207,6 +218,19 @@ def rysuj_wykres(event=None):
             ax.bar(srednie_bolu.index, srednie_bolu.values, color=['#e74c3c', '#3498db'], edgecolor='black', alpha=0.85)
             ax.set_title("Średni poziom bólu w zależności od płci")
             ax.set_xlabel("Płeć")
+            ax.set_ylabel("Średnia skala bólu (1-10)")
+            ax.grid(axis='y', linestyle='--', alpha=0.6)
+        else:
+             ax.text(0.5, 0.5, "Brak danych dla wybranego filtra", horizontalalignment='center',
+                    verticalalignment='center', transform=ax.transAxes)
+
+    elif typ == "Aktywność fizyczna a ból":
+        srednie_bolu = dane_f.groupby('Regularne_cwiczenia')['Skala_Bolu_1_10'].mean()
+
+        if not srednie_bolu.empty:
+            ax.bar(srednie_bolu.index, srednie_bolu.values, color=['#27ae60', '#e74c3c'], edgecolor='black', alpha=0.85)
+            ax.set_title("Średni poziom bólu u osób ćwiczących i niećwiczących")
+            ax.set_xlabel("Regularne ćwiczenia fizyczne")
             ax.set_ylabel("Średnia skala bólu (1-10)")
             ax.grid(axis='y', linestyle='--', alpha=0.6)
         else:
@@ -238,10 +262,13 @@ etykieta_status = ttk.Label(ramka_dolna, text="Status: Gotowy do pracy", font=("
 etykieta_status.pack(side="right", padx=15)
 
 etykieta_liczba_pacjentow = ttk.Label(ramka_dolna, text="Liczba pacjentów: -", font=("Arial", 10, "bold"))
-etykieta_liczba_pacjentow.pack(side="left", padx=15)
+etykieta_liczba_pacjentow.pack(side="left", padx=10)
 
 etykieta_sredni_wiek = ttk.Label(ramka_dolna, text="Średni wiek: -", font=("Arial", 10))
-etykieta_sredni_wiek.pack(side="left", padx=15)
+etykieta_sredni_wiek.pack(side="left", padx=10)
+
+etykieta_mediana_wieku = ttk.Label(ramka_dolna, text="Mediana wieku: -", font=("Arial", 10))
+etykieta_mediana_wieku.pack(side="left", padx=10)
 
 
 # --- POWIĄZANIA ZDARZEŃ (BINDY) ---
