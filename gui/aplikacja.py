@@ -49,7 +49,7 @@ except Exception as db_error:
 # Stworzenie głównego okna aplikacji
 okno = tk.Tk()
 okno.title("Analiza pacjentów z bólem pleców")
-okno.geometry("1420x800")
+okno.geometry("1380x840")
 
 # Konfiguracja nowoczesnego stylu interfejsu
 styl = ttk.Style()
@@ -143,10 +143,19 @@ przycisk_eksport.pack(side="right", padx=5)
 przycisk_jakosc = ttk.Button(ramka_przyciski_dol, text="🔍 Jakość danych", command=pokaz_jakosc_danych, width=15)
 przycisk_jakosc.pack(side="right", padx=5)
 
-etykieta_status = ttk.Label(ramka_dolna, text="Status: Gotowy do pracy (Baza SQLite)", font=("Arial", 9, "italic"))
-etykieta_status.pack(anchor="w", padx=10, pady=(5, 0))
+# --- AUTOMATYCZNY WNIOSEK ANALITYCZNY ---
+etykieta_wniosek = ttk.Label(
+    ramka_dolna,
+    text="Wniosek generowany przez program: -",
+    font=("Arial", 9, "italic"),
+    foreground="#1b4f72"
+)
+etykieta_wniosek.pack(anchor="w", padx=10, pady=(6, 2))
 
-# --- 2. GÓRNA RAMKA (FILTRY I WYSZUKIWARKA) ---
+etykieta_status = ttk.Label(ramka_dolna, text="Status: Gotowy do pracy (Baza SQLite)", font=("Arial", 9))
+etykieta_status.pack(anchor="w", padx=10, pady=(2, 0))
+
+# --- 2. GÓRNA RAMKA (FILTRY) ---
 ramka_gorna = ttk.Frame(okno, padding="10")
 ramka_gorna.pack(side="top", fill="x", padx=10, pady=10)
 
@@ -157,7 +166,6 @@ def resetuj_filtry():
     wybor_stylu.set("Wszyscy")
     wybor_wykresu.set("Wiek a ból")
     wybor_widoku.set("Wykres")
-    wejscie_szukaj.delete(0, tk.END)
     zmien_widok()
     rysuj_wykres()
     etykieta_status.config(text="Status: Zresetowano filtry")
@@ -273,14 +281,14 @@ def otwiera_formularz_dodawania():
     btn_zapisz.pack(pady=15)
 
 
-przycisk_reset = ttk.Button(ramka_gorna, text="🔄 Reset", command=resetuj_filtry, width=8)
-przycisk_reset.pack(side="right", padx=3)
+przycisk_reset = ttk.Button(ramka_gorna, text="🔄 Reset", command=resetuj_filtry, width=9)
+przycisk_reset.pack(side="right", padx=5)
 
-przycisk_zapisz = ttk.Button(ramka_gorna, text="📸 Zapisz wykres", command=zapisz_wykres, width=14)
-przycisk_zapisz.pack(side="right", padx=3)
+przycisk_zapisz = ttk.Button(ramka_gorna, text="📸 Zapisz wykres", command=zapisz_wykres, width=15)
+przycisk_zapisz.pack(side="right", padx=5)
 
-przycisk_dodaj = ttk.Button(ramka_gorna, text="➕ Dodaj pacjenta", command=otwiera_formularz_dodawania, width=14)
-przycisk_dodaj.pack(side="right", padx=3)
+przycisk_dodaj = ttk.Button(ramka_gorna, text="➕ Dodaj pacjenta", command=otwiera_formularz_dodawania, width=15)
+przycisk_dodaj.pack(side="right", padx=5)
 
 # 1. Wybór typu wykresu
 etykieta_wykres = ttk.Label(ramka_gorna, text="Wykres:")
@@ -296,54 +304,48 @@ wybor_wykresu = ttk.Combobox(
         "Porównanie grup pacjentów"
     ],
     state="readonly",
-    width=22
+    width=24
 )
 wybor_wykresu.set("Wiek a ból")
-wybor_wykresu.pack(side="left", padx=3)
+wybor_wykresu.pack(side="left", padx=5)
 
 # 2. Odcinek kręgosłupa
 etykieta_grupa = ttk.Label(ramka_gorna, text="Odcinek:")
-etykieta_grupa.pack(side="left", padx=(6, 2))
+etykieta_grupa.pack(side="left", padx=(10, 2))
 wybor_grupy = ttk.Combobox(
     ramka_gorna,
     values=["Wszyscy", "szyjny", "piersiowy", "lędźwiowy"],
     state="readonly",
-    width=8
+    width=10
 )
 wybor_grupy.set("Wszyscy")
-wybor_grupy.pack(side="left", padx=3)
+wybor_grupy.pack(side="left", padx=5)
 
 # 3. Wybór widoku (Wykres / Tabela)
 etykieta_widok = ttk.Label(ramka_gorna, text="Widok:")
-etykieta_widok.pack(side="left", padx=(6, 2))
+etykieta_widok.pack(side="left", padx=(10, 2))
 wybor_widoku = ttk.Combobox(
     ramka_gorna,
     values=["Wykres", "Tabela"],
     state="readonly",
-    width=7
+    width=9
 )
 wybor_widoku.set("Wykres")
-wybor_widoku.pack(side="left", padx=3)
+wybor_widoku.pack(side="left", padx=5)
 
 # 4. Aktywność fizyczna
 etykieta_cwiczenia = ttk.Label(ramka_gorna, text="Aktywność:")
-etykieta_cwiczenia.pack(side="left", padx=(6, 2))
-wybor_cwiczen = ttk.Combobox(ramka_gorna, values=["Wszyscy", "Tak", "Nie"], state="readonly", width=6)
+etykieta_cwiczenia.pack(side="left", padx=(10, 2))
+wybor_cwiczen = ttk.Combobox(ramka_gorna, values=["Wszyscy", "Tak", "Nie"], state="readonly", width=8)
 wybor_cwiczen.set("Wszyscy")
-wybor_cwiczen.pack(side="left", padx=3)
+wybor_cwiczen.pack(side="left", padx=5)
 
 # 5. Praca siedząca
 etykieta_styl = ttk.Label(ramka_gorna, text="Praca siedząca:")
-etykieta_styl.pack(side="left", padx=(6, 2))
-wybor_stylu = ttk.Combobox(ramka_gorna, values=["Wszyscy", "Tak", "Nie"], state="readonly", width=6)
+etykieta_styl.pack(side="left", padx=(10, 2))
+wybor_stylu = ttk.Combobox(ramka_gorna, values=["Wszyscy", "Tak", "Nie"], state="readonly", width=8)
 wybor_stylu.set("Wszyscy")
-wybor_stylu.pack(side="left", padx=3)
-
-# 6. Pole wyszukiwania tekstowego / numerycznego
-etykieta_szukaj = ttk.Label(ramka_gorna, text="Szukaj:")
-etykieta_szukaj.pack(side="left", padx=(6, 2))
-wejscie_szukaj = ttk.Entry(ramka_gorna, width=10)
-wejscie_szukaj.pack(side="left", padx=3)
+wybor_stylu.pack(side="left", padx=5)
 
 # --- 3. ŚRODKOWA CZĘŚĆ (WYKRES / TABELA) ---
 ramka_srodek = ttk.Frame(okno, padding="10")
@@ -386,7 +388,6 @@ def pobierz_filtrowane_dane():
     grupa = wybor_grupy.get()
     aktywnosc = wybor_cwiczen.get()
     styl_pracy = wybor_stylu.get()
-    szukany_tekst = wejscie_szukaj.get().strip().lower()
 
     if grupa != "Wszyscy":
         dane_f = dane_f[dane_f['Odcinek'].astype(str).str.strip().str.lower() == grupa.lower()]
@@ -397,11 +398,34 @@ def pobierz_filtrowane_dane():
     if styl_pracy != "Wszyscy":
         dane_f = dane_f[dane_f['Praca_siedzaca'].astype(str).str.strip().str.lower() == styl_pracy.lower()]
 
-    if szukany_tekst:
-        maska = dane_f.astype(str).apply(lambda col: col.str.lower().str.contains(szukany_tekst, na=False)).any(axis=1)
-        dane_f = dane_f[maska]
-
     return dane_f
+
+
+def generuj_automatyczny_wniosek(dane_f):
+    """Generuje dynamiczny wniosek tekstowy na podstawie aktualnie przefiltrowanych danych."""
+    n = len(dane_f)
+    if n == 0:
+        return "Wniosek generowany przez program: Brak danych dla wybranych kryteriów."
+
+    kolumna_bolu = 'Skala_Bolu_1_10' if 'Skala_Bolu_1_10' in dane_f.columns else 'Skalo_Bolu_1_10'
+    bol_seria = pd.to_numeric(dane_f.get(kolumna_bolu, pd.Series(dtype=float)), errors='coerce').dropna()
+    sredni_bol = bol_seria.mean() if not bol_seria.empty else 0
+
+    # Obliczamy odsetek osób z pracą siedzącą
+    siedzaca_tak = (dane_f['Praca_siedzaca'].astype(str).str.strip().str.lower() == 'tak').sum()
+    proc_siedzaca = (siedzaca_tak / n) * 100
+
+    # Obliczamy odsetek osób ćwiczących
+    cwiczenia_tak = (dane_f['Regularne_cwiczenia'].astype(str).str.strip().str.lower() == 'tak').sum()
+    proc_cwiczenia = (cwiczenia_tak / n) * 100
+
+    wniosek = (
+        f"Wniosek generowany przez program: W badanej grupie ({n} pacjentów) "
+        f"średni poziom bólu wynosi {sredni_bol:.1f}/10. "
+        f"Pracę siedzącą wykonuje {proc_siedzaca:.0f}% pacjentów, "
+        f"a regularnie ćwiczy {proc_cwiczenia:.0f}%."
+    )
+    return wniosek
 
 
 def rysuj_wykres(event=None):
@@ -433,6 +457,10 @@ def rysuj_wykres(event=None):
     etykieta_std_bol.config(text=f"Odch. std. bólu: {std_bol:.2f}" if pd.notna(std_bol) else "Odch. std. bólu: -")
     etykieta_min_max_bol.config(
         text=f"Min / Max ból: {int(min_bol)} / {int(max_bol)}" if not bol_seria.empty else "Min / Max ból: - / -")
+
+    # Aktualizacja automatycznego wniosku
+    tekst_wniosku = generuj_automatyczny_wniosek(dane_f)
+    etykieta_wniosek.config(text=tekst_wniosku)
 
     # Rysowanie wykresu
     ax.clear()
@@ -565,7 +593,6 @@ wybor_grupy.bind("<<ComboboxSelected>>", rysuj_wykres)
 wybor_widoku.bind("<<ComboboxSelected>>", zmien_widok)
 wybor_cwiczen.bind("<<ComboboxSelected>>", rysuj_wykres)
 wybor_stylu.bind("<<ComboboxSelected>>", rysuj_wykres)
-wejscie_szukaj.bind("<KeyRelease>", rysuj_wykres)
 
 
 def zamknij_aplikacje():
