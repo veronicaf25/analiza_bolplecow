@@ -1,15 +1,50 @@
-import tkinter as tk
+import os
+import sqlite3
 import pandas as pd
 import matplotlib.pyplot as plt
+import tkinter as tk
 from tkinter import messagebox, filedialog
 from tkinter import ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-# Wczytanie pliku z danymi pacjentów z zabezpieczeniem ścieżki
+# --- BEZPIECZNA INICJALIZACJA BAZY ---
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Jeśli uruchamiasz skrypt z folderu gui, cofamy się do głównego folderu projektu
+if os.path.basename(current_dir) == 'gui':
+    project_root = os.path.dirname(current_dir)
+else:
+    project_root = current_dir
+
+data_dir = os.path.join(project_root, 'data')
+db_path = os.path.join(data_dir, 'pacjenci.db')
+csv_path = os.path.join(data_dir, 'dane_pacjenci_bol_plecow.csv')
+
+# Tworzenie folderu data, jeśli nie istnieje
+os.makedirs(data_dir, exist_ok=True)
+
 try:
-    df = pd.read_csv('data/dane_pacjenci_bol_plecow.csv')
-except FileNotFoundError:
-    df = pd.read_csv('../data/dane_pacjenci_bol_plecow.csv')
+    # Próba połączenia i odczytu z bazy
+    conn = sqlite3.connect(db_path)
+    df = pd.read_sql("SELECT * FROM pacjenci", conn)
+    if df.empty:
+        raise Exception("Tabela w bazie jest pusta")
+    conn.close()
+except Exception as db_error:
+    try:
+        # Jeśli bazy nie ma lub jest pusta, tworzymy ją z pliku CSV
+        if not os.path.exists(csv_path):
+            raise FileNotFoundError(f"Nie znaleziono pliku CSV w ścieżce: {csv_path}")
+
+        df_csv = pd.read_csv(csv_path)
+        conn = sqlite3.connect(db_path)
+        df_csv.to_sql('pacjenci', conn, if_exists='replace', index=False)
+        df = pd.read_sql("SELECT * FROM pacjenci", conn)
+        conn.close()
+    except Exception as e:
+        messagebox.showerror("Błąd bazy danych",
+                             f"Nie udało się zainicjalizować bazy SQL:\n{e}\n\nŚcieżka DB: {db_path}")
+        exit()
 
 # Stworzenie głównego okna aplikacji
 okno = tk.Tk()
@@ -68,7 +103,7 @@ def pokaz_jakosc_danych():
     niepoprawny_wiek = ((wiek_kolumna < 0) | (wiek_kolumna > 120)).sum()
     niepoprawny_bol = ((bol_kolumna < 1) | (bol_kolumna > 10)).sum()
 
-    raport = "=== RAPORT JAKOŚCI DANYCH ===\n\n"
+    raport = "=== RAPORT JAKOŚCI DANYCH (Źródło: SQLite) ===\n\n"
     raport += "Liczba braków danych (NaN) w kolumnach:\n"
     for kolumna, liczba_brakow in braki.items():
         raport += f"• {kolumna}: {liczba_brakow} braków\n"
@@ -78,7 +113,7 @@ def pokaz_jakosc_danych():
     raport += f"• Skala bólu poza zakresem (1-10): {niepoprawny_bol}\n"
 
     messagebox.showinfo("Jakość danych (Data Quality)", raport)
-    etykieta_status.config(text="Status: Sprawdzono jakość danych")
+    etykieta_status.config(text="Status: Sprawdzono jakość danych z bazy SQL")
 
 
 def eksportuj_csv():
@@ -107,7 +142,7 @@ przycisk_eksport.pack(side="right", padx=5)
 przycisk_jakosc = ttk.Button(ramka_przyciski_dol, text="🔍 Jakość danych", command=pokaz_jakosc_danych, width=15)
 przycisk_jakosc.pack(side="right", padx=5)
 
-etykieta_status = ttk.Label(ramka_dolna, text="Status: Gotowy do pracy", font=("Arial", 9, "italic"))
+etykieta_status = ttk.Label(ramka_dolna, text="Status: Gotowy do pracy (Baza SQLite)", font=("Arial", 9, "italic"))
 etykieta_status.pack(anchor="w", padx=10, pady=(5, 0))
 
 # --- 2. GÓRNA RAMKA (FILTRY I WYSZUKIWARKA) ---
@@ -146,7 +181,6 @@ def zapisz_wykres():
             messagebox.showerror("Błąd", f"Nie udało się zapisać wykresu:\n{e}")
 
 
-# Przyciski po prawej stronie w górnej ramce (Reset i Zapisz wykres)
 przycisk_reset = ttk.Button(ramka_gorna, text="🔄 Reset", command=resetuj_filtry, width=9)
 przycisk_reset.pack(side="right", padx=5)
 
