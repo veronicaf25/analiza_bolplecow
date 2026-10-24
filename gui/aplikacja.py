@@ -14,7 +14,7 @@ except FileNotFoundError:
 # Stworzenie głównego okna aplikacji
 okno = tk.Tk()
 okno.title("Analiza pacjentów z bólem pleców")
-okno.geometry("1220x750")
+okno.geometry("1220x780")
 
 # Konfiguracja nowoczesnego stylu interfejsu
 styl = ttk.Style()
@@ -24,7 +24,7 @@ styl.theme_use('clam')
 ramka_gorna = ttk.Frame(okno, padding="10")
 ramka_gorna.pack(fill="x", padx=10, pady=10)
 
-# 1. Wybór typu wykresu (z dodaną opcją aktywności fizycznej)
+# 1. Wybór typu wykresu
 etykieta_wykres = ttk.Label(ramka_gorna, text="Wykres:")
 etykieta_wykres.pack(side="left", padx=2)
 wybor_wykresu = ttk.Combobox(
@@ -149,14 +149,31 @@ def rysuj_wykres(event=None):
     if styl_pracy != "Wszyscy":
         dane_f = dane_f[dane_f['Praca_siedzaca'] == styl_pracy]
 
-    # Statystyki na dole (Średnia i Mediana)
+    # --- OBLICZENIA STATYSTYCZNE (WIEK I BÓL) ---
     liczba_pacjentow = len(dane_f)
     sredni_wiek = dane_f['Wiek'].mean() if liczba_pacjentow > 0 else 0
     mediana_wieku = dane_f['Wiek'].median() if liczba_pacjentow > 0 else 0
 
+    # Obsługa kolumny bólu
+    kolumna_bolu = 'Skala_Bolu_1_10' if 'Skala_Bolu_1_10' in dane_f.columns else 'Skalo_Bolu_1_10'
+    bol_seria = pd.to_numeric(dane_f.get(kolumna_bolu, pd.Series(dtype=float)), errors='coerce').dropna()
+
+    sredni_bol = bol_seria.mean() if not bol_seria.empty else 0
+    mediana_bol = bol_seria.median() if not bol_seria.empty else 0
+    std_bol = bol_seria.std() if len(bol_seria) > 1 else 0
+    min_bol = bol_seria.min() if not bol_seria.empty else 0
+    max_bol = bol_seria.max() if not bol_seria.empty else 0
+
+    # Aktualizacja etykiet statystyk wieku i liczności
     etykieta_liczba_pacjentow.config(text=f"Liczba pacjentów: {liczba_pacjentow}")
-    etykieta_sredni_wiek.config(text=f"Średni wiek: {sredni_wiek:.1f}")
-    etykieta_mediana_wieku.config(text=f"Mediana wieku: {mediana_wieku:.1f}")
+    etykieta_sredni_wiek.config(text=f"Średni wiek: {sredni_wiek:.1f}" if pd.notna(sredni_wiek) else "Średni wiek: -")
+    etykieta_mediana_wieku.config(text=f"Mediana wieku: {mediana_wieku:.1f}" if pd.notna(mediana_wieku) else "Mediana wieku: -")
+
+    # Aktualizacja etykiet statystyk poziomu bólu
+    etykieta_sredni_bol.config(text=f"Średni ból: {sredni_bol:.2f}" if pd.notna(sredni_bol) else "Średni ból: -")
+    etykieta_mediana_bol.config(text=f"Mediana bólu: {mediana_bol:.1f}" if pd.notna(mediana_bol) else "Mediana bólu: -")
+    etykieta_std_bol.config(text=f"Odch. std. bólu: {std_bol:.2f}" if pd.notna(std_bol) else "Odch. std. bólu: -")
+    etykieta_min_max_bol.config(text=f"Min / Max ból: {int(min_bol)} / {int(max_bol)}" if not bol_seria.empty else "Min / Max ból: - / -")
 
     # Rysowanie wykresu
     ax.clear()
@@ -184,8 +201,8 @@ def rysuj_wykres(event=None):
                     verticalalignment='center', transform=ax.transAxes)
 
     elif typ == "Histogram poziomu bólu":
-        if not dane_f.empty:
-            ax.hist(dane_f['Skalo_Bolu_1_10'] if 'Skalo_Bolu_1_10' in dane_f.columns else dane_f['Skala_Bolu_1_10'], bins=8, color='#e74c3c', edgecolor='black', alpha=0.85)
+        if not bol_seria.empty:
+            ax.hist(bol_seria, bins=8, color='#e74c3c', edgecolor='black', alpha=0.85)
             ax.set_title("Histogram poziomu bólu pacjentów")
             ax.set_xlabel("Skala bólu (1-10)")
             ax.set_ylabel("Liczba pacjentów")
@@ -199,7 +216,6 @@ def rysuj_wykres(event=None):
             x = dane_f['Wiek']
             y = dane_f['Skala_Bolu_1_10']
 
-            # Obliczenie współczynnika korelacji Pearsona
             korelacja = x.corr(y)
 
             ax.scatter(x, y, color='#2980b9', alpha=0.7, edgecolors='black', s=60)
@@ -254,21 +270,41 @@ def rysuj_wykres(event=None):
         ))
 
 
-# --- DOLNA RAMKA NA STATYSTYKI ---
+# --- DOLNA RAMKA NA STATYSTYKI (DWURZĘDOWA) ---
 ramka_dolna = ttk.LabelFrame(okno, text="Podsumowanie statystyczne", padding="10")
 ramka_dolna.pack(fill="x", padx=10, pady=10)
 
-etykieta_status = ttk.Label(ramka_dolna, text="Status: Gotowy do pracy", font=("Arial", 9, "italic"))
+# Górny rząd: Liczba pacjentów i statystyki wieku + Status po prawej
+gorna_stat_ramka = ttk.Frame(ramka_dolna)
+gorna_stat_ramka.pack(fill="x", pady=2)
+
+etykieta_status = ttk.Label(gorna_stat_ramka, text="Status: Gotowy do pracy", font=("Arial", 9, "italic"))
 etykieta_status.pack(side="right", padx=15)
 
-etykieta_liczba_pacjentow = ttk.Label(ramka_dolna, text="Liczba pacjentów: -", font=("Arial", 10, "bold"))
+etykieta_liczba_pacjentow = ttk.Label(gorna_stat_ramka, text="Liczba pacjentów: -", font=("Arial", 10, "bold"))
 etykieta_liczba_pacjentow.pack(side="left", padx=10)
 
-etykieta_sredni_wiek = ttk.Label(ramka_dolna, text="Średni wiek: -", font=("Arial", 10))
+etykieta_sredni_wiek = ttk.Label(gorna_stat_ramka, text="Średni wiek: -", font=("Arial", 10))
 etykieta_sredni_wiek.pack(side="left", padx=10)
 
-etykieta_mediana_wieku = ttk.Label(ramka_dolna, text="Mediana wieku: -", font=("Arial", 10))
+etykieta_mediana_wieku = ttk.Label(gorna_stat_ramka, text="Mediana wieku: -", font=("Arial", 10))
 etykieta_mediana_wieku.pack(side="left", padx=10)
+
+# Dolny rząd: Statystyki poziomu bólu
+dolna_stat_ramka = ttk.Frame(ramka_dolna)
+dolna_stat_ramka.pack(fill="x", pady=(5, 2))
+
+etykieta_sredni_bol = ttk.Label(dolna_stat_ramka, text="Średni ból: -", font=("Arial", 10))
+etykieta_sredni_bol.pack(side="left", padx=10)
+
+etykieta_mediana_bol = ttk.Label(dolna_stat_ramka, text="Mediana bólu: -", font=("Arial", 10))
+etykieta_mediana_bol.pack(side="left", padx=10)
+
+etykieta_std_bol = ttk.Label(dolna_stat_ramka, text="Odch. std. bólu: -", font=("Arial", 10))
+etykieta_std_bol.pack(side="left", padx=10)
+
+etykieta_min_max_bol = ttk.Label(dolna_stat_ramka, text="Min / Max ból: -", font=("Arial", 10))
+etykieta_min_max_bol.pack(side="left", padx=10)
 
 
 # --- POWIĄZANIA ZDARZEŃ (BINDY) ---
