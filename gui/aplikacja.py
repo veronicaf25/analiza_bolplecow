@@ -1,7 +1,7 @@
 import tkinter as tk
 import pandas as pd
 import matplotlib.pyplot as plt
-from tkinter import messagebox
+from tkinter import messagebox, filedialog
 from tkinter import ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
@@ -14,15 +14,117 @@ except FileNotFoundError:
 # Stworzenie głównego okna aplikacji
 okno = tk.Tk()
 okno.title("Analiza pacjentów z bólem pleców")
-okno.geometry("1220x780")
+okno.geometry("1250x800")
 
 # Konfiguracja nowoczesnego stylu interfejsu
 styl = ttk.Style()
 styl.theme_use('clam')
 
-# Stworzenie głównej ramki na górne elementy sterujące (filtry)
+# --- 1. DOLNY PANEL STATYSTYCZNY (PAKOWANY NA SAMym DOLE) ---
+ramka_dolna = ttk.LabelFrame(okno, text="Podsumowanie statystyczne i jakość danych", padding="10")
+ramka_dolna.pack(side="bottom", fill="x", padx=10, pady=10)
+
+# Górny rząd statystyk
+gorna_stat_ramka = ttk.Frame(ramka_dolna)
+gorna_stat_ramka.pack(fill="x", pady=2)
+
+etykieta_liczba_pacjentow = ttk.Label(gorna_stat_ramka, text="Liczba pacjentów: -", font=("Arial", 10, "bold"))
+etykieta_liczba_pacjentow.pack(side="left", padx=10)
+
+etykieta_sredni_wiek = ttk.Label(gorna_stat_ramka, text="Średni wiek: -", font=("Arial", 10))
+etykieta_sredni_wiek.pack(side="left", padx=10)
+
+etykieta_mediana_wieku = ttk.Label(gorna_stat_ramka, text="Mediana wieku: -", font=("Arial", 10))
+etykieta_mediana_wieku.pack(side="left", padx=10)
+
+# Dolny rząd statystyk + Przyciski akcji na dole po prawej
+dolna_stat_ramka = ttk.Frame(ramka_dolna)
+dolna_stat_ramka.pack(fill="x", pady=(5, 2))
+
+etykieta_sredni_bol = ttk.Label(dolna_stat_ramka, text="Średni ból: -", font=("Arial", 10))
+etykieta_sredni_bol.pack(side="left", padx=10)
+
+etykieta_mediana_bol = ttk.Label(dolna_stat_ramka, text="Mediana bólu: -", font=("Arial", 10))
+etykieta_mediana_bol.pack(side="left", padx=10)
+
+etykieta_std_bol = ttk.Label(dolna_stat_ramka, text="Odch. std. bólu: -", font=("Arial", 10))
+etykieta_std_bol.pack(side="left", padx=10)
+
+etykieta_min_max_bol = ttk.Label(dolna_stat_ramka, text="Min / Max ból: -", font=("Arial", 10))
+etykieta_min_max_bol.pack(side="left", padx=10)
+
+# Przyciski akcji umieszczone na dole po prawej stronie panelu statystyk
+ramka_przyciski_dol = ttk.Frame(dolna_stat_ramka)
+ramka_przyciski_dol.pack(side="right", padx=5)
+
+
+def pokaz_jakosc_danych():
+    braki = df.isnull().sum()
+
+    wiek_kolumna = pd.to_numeric(df.get('Wiek'), errors='coerce')
+    kolumna_bolu = 'Skala_Bolu_1_10' if 'Skala_Bolu_1_10' in df.columns else 'Skalo_Bolu_1_10'
+    bol_kolumna = pd.to_numeric(df.get(kolumna_bolu), errors='coerce')
+
+    niepoprawny_wiek = ((wiek_kolumna < 0) | (wiek_kolumna > 120)).sum()
+    niepoprawny_bol = ((bol_kolumna < 1) | (bol_kolumna > 10)).sum()
+
+    raport = "=== RAPORT JAKOŚCI DANYCH ===\n\n"
+    raport += "Liczba braków danych (NaN) w kolumnach:\n"
+    for kolumna, liczba_brakow in braki.items():
+        raport += f"• {kolumna}: {liczba_brakow} braków\n"
+
+    raport += f"\nKontrola zakresów logicznych:\n"
+    raport += f"• Wiek poza zakresem (0-120 lat): {niepoprawny_wiek}\n"
+    raport += f"• Skala bólu poza zakresem (1-10): {niepoprawny_bol}\n"
+
+    messagebox.showinfo("Jakość danych (Data Quality)", raport)
+    etykieta_status.config(text="Status: Sprawdzono jakość danych")
+
+
+def eksportuj_csv():
+    dane_f = pobierz_filtrowane_dane()
+    if dane_f.empty:
+        messagebox.showinfo("Brak danych", "Nie ma danych do eksportowania.")
+        return
+
+    sciezka = filedialog.asksaveasfilename(
+        title="Zapisz filtrowane dane",
+        defaultextension=".csv",
+        filetypes=[("Pliki CSV", "*.csv")]
+    )
+    if sciezka:
+        try:
+            dane_f.to_csv(sciezka, index=False, encoding="utf-8-sig")
+            etykieta_status.config(text="Status: Wyeksportowano dane")
+            messagebox.showinfo("Eksport zakończony", "Dane zostały zapisane do pliku CSV.")
+        except OSError as blad:
+            messagebox.showerror("Błąd zapisu", f"Nie udało się zapisać pliku:\n{blad}")
+
+
+przycisk_jakosc = ttk.Button(ramka_przyciski_dol, text="🔍 Jakość danych", command=pokaz_jakosc_danych, width=15)
+przycisk_jakosc.pack(side="right", padx=5)
+
+przycisk_eksport = ttk.Button(ramka_przyciski_dol, text="💾 Eksport CSV", command=eksportuj_csv, width=14)
+przycisk_eksport.pack(side="right", padx=5)
+
+etykieta_status = ttk.Label(ramka_dolna, text="Status: Gotowy do pracy", font=("Arial", 9, "italic"))
+etykieta_status.pack(anchor="w", padx=10, pady=(5, 0))
+
+# --- 2. GÓRNA RAMKA (FILTRY) ---
 ramka_gorna = ttk.Frame(okno, padding="10")
-ramka_gorna.pack(fill="x", padx=10, pady=10)
+ramka_gorna.pack(side="top", fill="x", padx=10, pady=10)
+
+
+def resetuj_filtry():
+    wybor_grupy.set("Wszyscy")
+    wybor_cwiczen.set("Wszyscy")
+    wybor_stylu.set("Wszyscy")
+    wybor_wykresu.set("Wiek a ból")
+    wybor_widoku.set("Wykres")
+    zmien_widok()
+    rysuj_wykres()
+    etykieta_status.config(text="Status: Zresetowano filtry")
+
 
 # 1. Wybór typu wykresu
 etykieta_wykres = ttk.Label(ramka_gorna, text="Wykres:")
@@ -37,7 +139,7 @@ wybor_wykresu = ttk.Combobox(
         "Aktywność fizyczna a ból"
     ],
     state="readonly",
-    width=28
+    width=26
 )
 wybor_wykresu.set("Wiek a ból")
 wybor_wykresu.pack(side="left", padx=5)
@@ -80,33 +182,19 @@ wybor_stylu = ttk.Combobox(ramka_gorna, values=["Wszyscy", "Tak", "Nie"], state=
 wybor_stylu.set("Wszyscy")
 wybor_stylu.pack(side="left", padx=5)
 
-
-def resetuj_filtry():
-    wybor_grupy.set("Wszyscy")
-    wybor_cwiczen.set("Wszyscy")
-    wybor_stylu.set("Wszyscy")
-    wybor_wykresu.set("Wiek a ból")
-    wybor_widoku.set("Wykres")
-    zmien_widok()
-    rysuj_wykres()
-    etykieta_status.config(text="Status: Zresetowano filtry")
-
-
 # Przycisk resetowania filtrów po prawej stronie
 przycisk_reset = ttk.Button(ramka_gorna, text="🔄 Resetuj filtry", command=resetuj_filtry, width=15)
 przycisk_reset.pack(side="right", padx=5)
 
-
-# --- RAMKA NA WYKRES (Środek - domyślnie widoczna) ---
+# --- 3. ŚRODKOWA CZĘŚĆ (WYKRES / TABELA) ---
 ramka_srodek = ttk.Frame(okno, padding="10")
-ramka_srodek.pack(fill="both", expand=True, padx=10, pady=5)
+ramka_srodek.pack(side="top", fill="both", expand=True, padx=10, pady=5)
 
 fig, ax = plt.subplots(figsize=(6, 4), dpi=100)
 canvas = FigureCanvasTkAgg(fig, master=ramka_srodek)
 canvas.get_tk_widget().pack(fill="both", expand=True)
 
-
-# --- RAMKA NA TABELĘ (Środek - domyślnie ukryta) ---
+# Ramka na tabelę (domyślnie ukryta)
 ramka_tabela = ttk.LabelFrame(okno, text="Tabela filtrowanych pacjentów", padding="5")
 
 kolumny = ('Wiek', 'Plec', 'Odcinek', 'Skala_Bolu', 'Cwiczenia', 'Praca_siedzaca')
@@ -126,35 +214,41 @@ tabela.configure(yscrollcommand=scrollbar.set)
 def zmien_widok(event=None):
     wybrany = wybor_widoku.get()
     if wybrany == "Wykres":
-        ramka_tabela.pack_forget()  # Schowaj tabelę
-        ramka_srodek.pack(fill="both", expand=True, padx=10, pady=5)  # Pokaż wykres
+        ramka_tabela.pack_forget()
+        ramka_srodek.pack(side="top", fill="both", expand=True, padx=10, pady=5)
     else:
-        ramka_srodek.pack_forget()  # Schowaj wykres
-        ramka_tabela.pack(fill="both", expand=True, padx=10, pady=5)  # Pokaż tabelę
+        ramka_srodek.pack_forget()
+        ramka_tabela.pack(side="top", fill="both", expand=True, padx=10, pady=5)
 
 
-def rysuj_wykres(event=None):
-    typ = wybor_wykresu.get()
+def pobierz_filtrowane_dane():
+    dane_f = df.copy()
+
     grupa = wybor_grupy.get()
     aktywnosc = wybor_cwiczen.get()
     styl_pracy = wybor_stylu.get()
 
-    # Klonowanie i filtrowanie wielokryteriowe
-    dane_f = df.copy()
-
     if grupa != "Wszyscy":
-        dane_f = dane_f[dane_f['Odcinek'] == grupa]
-    if aktywnosc != "Wszyscy":
-        dane_f = dane_f[dane_f['Regularne_cwiczenia'] == aktywnosc]
-    if styl_pracy != "Wszyscy":
-        dane_f = dane_f[dane_f['Praca_siedzaca'] == styl_pracy]
+        dane_f = dane_f[dane_f['Odcinek'].astype(str).str.strip().str.lower() == grupa.lower()]
 
-    # --- OBLICZENIA STATYSTYCZNE (WIEK I BÓL) ---
+    if aktywnosc != "Wszyscy":
+        dane_f = dane_f[dane_f['Regularne_cwiczenia'].astype(str).str.strip().str.lower() == aktywnosc.lower()]
+
+    if styl_pracy != "Wszyscy":
+        dane_f = dane_f[dane_f['Praca_siedzaca'].astype(str).str.strip().str.lower() == styl_pracy.lower()]
+
+    return dane_f
+
+
+def rysuj_wykres(event=None):
+    typ = wybor_wykresu.get()
+    dane_f = pobierz_filtrowane_dane()
+
+    # --- OBLICZENIA STATYSTYCZNE ---
     liczba_pacjentow = len(dane_f)
     sredni_wiek = dane_f['Wiek'].mean() if liczba_pacjentow > 0 else 0
     mediana_wieku = dane_f['Wiek'].median() if liczba_pacjentow > 0 else 0
 
-    # Obsługa kolumny bólu
     kolumna_bolu = 'Skala_Bolu_1_10' if 'Skala_Bolu_1_10' in dane_f.columns else 'Skalo_Bolu_1_10'
     bol_seria = pd.to_numeric(dane_f.get(kolumna_bolu, pd.Series(dtype=float)), errors='coerce').dropna()
 
@@ -164,16 +258,17 @@ def rysuj_wykres(event=None):
     min_bol = bol_seria.min() if not bol_seria.empty else 0
     max_bol = bol_seria.max() if not bol_seria.empty else 0
 
-    # Aktualizacja etykiet statystyk wieku i liczności
+    # Aktualizacja etykiet statystyk
     etykieta_liczba_pacjentow.config(text=f"Liczba pacjentów: {liczba_pacjentow}")
     etykieta_sredni_wiek.config(text=f"Średni wiek: {sredni_wiek:.1f}" if pd.notna(sredni_wiek) else "Średni wiek: -")
-    etykieta_mediana_wieku.config(text=f"Mediana wieku: {mediana_wieku:.1f}" if pd.notna(mediana_wieku) else "Mediana wieku: -")
+    etykieta_mediana_wieku.config(
+        text=f"Mediana wieku: {mediana_wieku:.1f}" if pd.notna(mediana_wieku) else "Mediana wieku: -")
 
-    # Aktualizacja etykiet statystyk poziomu bólu
     etykieta_sredni_bol.config(text=f"Średni ból: {sredni_bol:.2f}" if pd.notna(sredni_bol) else "Średni ból: -")
     etykieta_mediana_bol.config(text=f"Mediana bólu: {mediana_bol:.1f}" if pd.notna(mediana_bol) else "Mediana bólu: -")
     etykieta_std_bol.config(text=f"Odch. std. bólu: {std_bol:.2f}" if pd.notna(std_bol) else "Odch. std. bólu: -")
-    etykieta_min_max_bol.config(text=f"Min / Max ból: {int(min_bol)} / {int(max_bol)}" if not bol_seria.empty else "Min / Max ból: - / -")
+    etykieta_min_max_bol.config(
+        text=f"Min / Max ból: {int(min_bol)} / {int(max_bol)}" if not bol_seria.empty else "Min / Max ból: - / -")
 
     # Rysowanie wykresu
     ax.clear()
@@ -197,8 +292,7 @@ def rysuj_wykres(event=None):
             ax.set_ylabel("Skala bólu (1-10)")
             ax.grid(True, linestyle='--', alpha=0.6)
         else:
-            ax.text(0.5, 0.5, "Brak danych dla wybranego filtra", horizontalalignment='center',
-                    verticalalignment='center', transform=ax.transAxes)
+            ax.text(0.5, 0.5, "Brak danych dla wybranego filtra", ha='center', va='center', transform=ax.transAxes)
 
     elif typ == "Histogram poziomu bólu":
         if not bol_seria.empty:
@@ -208,14 +302,12 @@ def rysuj_wykres(event=None):
             ax.set_ylabel("Liczba pacjentów")
             ax.grid(axis='y', linestyle='--', alpha=0.6)
         else:
-            ax.text(0.5, 0.5, "Brak danych dla wybranego filtra", horizontalalignment='center',
-                    verticalalignment='center', transform=ax.transAxes)
+            ax.text(0.5, 0.5, "Brak danych dla wybranego filtra", ha='center', va='center', transform=ax.transAxes)
 
     elif typ == "Wykres rozrzutu (Wiek vs Ból)":
         if not dane_f.empty and len(dane_f) > 1:
             x = dane_f['Wiek']
             y = dane_f['Skala_Bolu_1_10']
-
             korelacja = x.corr(y)
 
             ax.scatter(x, y, color='#2980b9', alpha=0.7, edgecolors='black', s=60)
@@ -224,8 +316,7 @@ def rysuj_wykres(event=None):
             ax.set_ylabel("Skala bólu (1-10)")
             ax.grid(True, linestyle='--', alpha=0.6)
         else:
-            ax.text(0.5, 0.5, "Za mało danych do analizy korelacji", horizontalalignment='center',
-                    verticalalignment='center', transform=ax.transAxes)
+            ax.text(0.5, 0.5, "Za mało danych do analizy korelacji", ha='center', va='center', transform=ax.transAxes)
 
     elif typ == "Płeć a ból":
         srednie_bolu = dane_f.groupby('Plec')['Skala_Bolu_1_10'].mean()
@@ -237,8 +328,7 @@ def rysuj_wykres(event=None):
             ax.set_ylabel("Średnia skala bólu (1-10)")
             ax.grid(axis='y', linestyle='--', alpha=0.6)
         else:
-             ax.text(0.5, 0.5, "Brak danych dla wybranego filtra", horizontalalignment='center',
-                    verticalalignment='center', transform=ax.transAxes)
+            ax.text(0.5, 0.5, "Brak danych dla wybranego filtra", ha='center', va='center', transform=ax.transAxes)
 
     elif typ == "Aktywność fizyczna a ból":
         srednie_bolu = dane_f.groupby('Regularne_cwiczenia')['Skala_Bolu_1_10'].mean()
@@ -250,8 +340,7 @@ def rysuj_wykres(event=None):
             ax.set_ylabel("Średnia skala bólu (1-10)")
             ax.grid(axis='y', linestyle='--', alpha=0.6)
         else:
-             ax.text(0.5, 0.5, "Brak danych dla wybranego filtra", horizontalalignment='center',
-                    verticalalignment='center', transform=ax.transAxes)
+            ax.text(0.5, 0.5, "Brak danych dla wybranego filtra", ha='center', va='center', transform=ax.transAxes)
 
     canvas.draw()
 
@@ -268,43 +357,6 @@ def rysuj_wykres(event=None):
             row_data.get('Regularne_cwiczenia', '-'),
             row_data.get('Praca_siedzaca', '-')
         ))
-
-
-# --- DOLNA RAMKA NA STATYSTYKI (DWURZĘDOWA) ---
-ramka_dolna = ttk.LabelFrame(okno, text="Podsumowanie statystyczne", padding="10")
-ramka_dolna.pack(fill="x", padx=10, pady=10)
-
-# Górny rząd: Liczba pacjentów i statystyki wieku + Status po prawej
-gorna_stat_ramka = ttk.Frame(ramka_dolna)
-gorna_stat_ramka.pack(fill="x", pady=2)
-
-etykieta_status = ttk.Label(gorna_stat_ramka, text="Status: Gotowy do pracy", font=("Arial", 9, "italic"))
-etykieta_status.pack(side="right", padx=15)
-
-etykieta_liczba_pacjentow = ttk.Label(gorna_stat_ramka, text="Liczba pacjentów: -", font=("Arial", 10, "bold"))
-etykieta_liczba_pacjentow.pack(side="left", padx=10)
-
-etykieta_sredni_wiek = ttk.Label(gorna_stat_ramka, text="Średni wiek: -", font=("Arial", 10))
-etykieta_sredni_wiek.pack(side="left", padx=10)
-
-etykieta_mediana_wieku = ttk.Label(gorna_stat_ramka, text="Mediana wieku: -", font=("Arial", 10))
-etykieta_mediana_wieku.pack(side="left", padx=10)
-
-# Dolny rząd: Statystyki poziomu bólu
-dolna_stat_ramka = ttk.Frame(ramka_dolna)
-dolna_stat_ramka.pack(fill="x", pady=(5, 2))
-
-etykieta_sredni_bol = ttk.Label(dolna_stat_ramka, text="Średni ból: -", font=("Arial", 10))
-etykieta_sredni_bol.pack(side="left", padx=10)
-
-etykieta_mediana_bol = ttk.Label(dolna_stat_ramka, text="Mediana bólu: -", font=("Arial", 10))
-etykieta_mediana_bol.pack(side="left", padx=10)
-
-etykieta_std_bol = ttk.Label(dolna_stat_ramka, text="Odch. std. bólu: -", font=("Arial", 10))
-etykieta_std_bol.pack(side="left", padx=10)
-
-etykieta_min_max_bol = ttk.Label(dolna_stat_ramka, text="Min / Max ból: -", font=("Arial", 10))
-etykieta_min_max_bol.pack(side="left", padx=10)
 
 
 # --- POWIĄZANIA ZDARZEŃ (BINDY) ---
