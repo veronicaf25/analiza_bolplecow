@@ -49,7 +49,7 @@ except Exception as db_error:
 # Stworzenie głównego okna aplikacji
 okno = tk.Tk()
 okno.title("Analiza pacjentów z bólem pleców")
-okno.geometry("1380x800")
+okno.geometry("1420x800")
 
 # Konfiguracja nowoczesnego stylu interfejsu
 styl = ttk.Style()
@@ -94,6 +94,7 @@ ramka_przyciski_dol.pack(side="right", padx=5)
 
 
 def pokaz_jakosc_danych():
+    global df
     braki = df.isnull().sum()
 
     wiek_kolumna = pd.to_numeric(df.get('Wiek'), errors='coerce')
@@ -181,11 +182,105 @@ def zapisz_wykres():
             messagebox.showerror("Błąd", f"Nie udało się zapisać wykresu:\n{e}")
 
 
-przycisk_reset = ttk.Button(ramka_gorna, text="🔄 Reset", command=resetuj_filtry, width=9)
-przycisk_reset.pack(side="right", padx=5)
+# --- FORMULARZ DODAWANIA NOWEGO PACJENTA ---
+def otwiera_formularz_dodawania():
+    okno_form = tk.Toplevel(okno)
+    okno_form.title("Dodaj nowego pacjenta")
+    okno_form.geometry("400x380")
+    okno_form.grab_set()
 
-przycisk_zapisz = ttk.Button(ramka_gorna, text="📸 Zapisz wykres", command=zapisz_wykres, width=15)
-przycisk_zapisz.pack(side="right", padx=5)
+    ttk.Label(okno_form, text="Wprowadź dane nowego pacjenta", font=("Arial", 11, "bold")).pack(pady=10)
+
+    form_frame = ttk.Frame(okno_form, padding="10")
+    form_frame.pack(fill="both", expand=True)
+
+    # Wiek
+    ttk.Label(form_frame, text="Wiek (lata):").grid(row=0, column=0, sticky="w", pady=5)
+    e_wiek = ttk.Entry(form_frame, width=20)
+    e_wiek.grid(row=0, column=1, pady=5)
+
+    # Płeć
+    ttk.Label(form_frame, text="Płeć:").grid(row=1, column=0, sticky="w", pady=5)
+    cb_plec = ttk.Combobox(form_frame, values=["Kobieta", "Mężczyzna"], state="readonly", width=18)
+    cb_plec.set("Kobieta")
+    cb_plec.grid(row=1, column=1, pady=5)
+
+    # Skala bólu
+    ttk.Label(form_frame, text="Skala bólu (1-10):").grid(row=2, column=0, sticky="w", pady=5)
+    cb_bol = ttk.Combobox(form_frame, values=[str(i) for i in range(1, 11)], state="readonly", width=18)
+    cb_bol.set("5")
+    cb_bol.grid(row=2, column=1, pady=5)
+
+    # Regularne ćwiczenia
+    ttk.Label(form_frame, text="Regularne ćwiczenia:").grid(row=3, column=0, sticky="w", pady=5)
+    cb_cwiczenia = ttk.Combobox(form_frame, values=["Tak", "Nie"], state="readonly", width=18)
+    cb_cwiczenia.set("Tak")
+    cb_cwiczenia.grid(row=3, column=1, pady=5)
+
+    # Odcinek kręgosłupa
+    ttk.Label(form_frame, text="Odcinek kręgosłupa:").grid(row=4, column=0, sticky="w", pady=5)
+    cb_odcinek = ttk.Combobox(form_frame, values=["lędźwiowy", "piersiowy", "szyjny"], state="readonly", width=18)
+    cb_odcinek.set("lędźwiowy")
+    cb_odcinek.grid(row=4, column=1, pady=5)
+
+    # Praca siedząca
+    ttk.Label(form_frame, text="Praca siedząca:").grid(row=5, column=0, sticky="w", pady=5)
+    cb_praca = ttk.Combobox(form_frame, values=["Tak", "Nie"], state="readonly", width=18)
+    cb_praca.set("Tak")
+    cb_praca.grid(row=5, column=1, pady=5)
+
+    def zapisz_pacjenta():
+        global df
+        try:
+            wiek_val = int(e_wiek.get().strip())
+            if not (0 < wiek_val < 120):
+                raise ValueError("Wiek musi być w zakresie 1-119.")
+
+            plec_val = cb_plec.get()
+            bol_val = int(cb_bol.get())
+            cwiczenia_val = cb_cwiczenia.get()
+            odcinek_val = cb_odcinek.get()
+            praca_val = cb_praca.get()
+
+            # Zapis do bazy SQLite
+            conn = sqlite3.connect(db_path)
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO pacjenci (Wiek, Plec, Skala_Bolu_1_10, Regularne_cwiczenia, Odcinek, Praca_siedzaca)
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, (wiek_val, plec_val, bol_val, cwiczenia_val, odcinek_val, praca_val))
+            conn.commit()
+
+            # Ponowny odczyt z bazy SQLite
+            df = pd.read_sql("SELECT * FROM pacjenci", conn)
+            conn.close()
+
+            # Aktualizacja pliku CSV dla pełnej spójności
+            try:
+                df.to_csv(csv_path, index=False, encoding='utf-8-sig')
+            except Exception:
+                pass
+
+            rysuj_wykres()
+            okno_form.destroy()
+            etykieta_status.config(text="Status: Dodano nowego pacjenta pomyślnie!")
+            messagebox.showinfo("Sukces", "Nowy pacjent został pomyślnie dodany do bazy SQLite i pliku CSV!")
+
+        except ValueError as err:
+            messagebox.showerror("Błąd danych", f"Niepoprawne dane wejściowe:\n{err}")
+
+    btn_zapisz = ttk.Button(okno_form, text="💾 Zapisz pacjenta", command=zapisz_pacjenta)
+    btn_zapisz.pack(pady=15)
+
+
+przycisk_reset = ttk.Button(ramka_gorna, text="🔄 Reset", command=resetuj_filtry, width=8)
+przycisk_reset.pack(side="right", padx=3)
+
+przycisk_zapisz = ttk.Button(ramka_gorna, text="📸 Zapisz wykres", command=zapisz_wykres, width=14)
+przycisk_zapisz.pack(side="right", padx=3)
+
+przycisk_dodaj = ttk.Button(ramka_gorna, text="➕ Dodaj pacjenta", command=otwiera_formularz_dodawania, width=14)
+przycisk_dodaj.pack(side="right", padx=3)
 
 # 1. Wybór typu wykresu
 etykieta_wykres = ttk.Label(ramka_gorna, text="Wykres:")
@@ -201,54 +296,54 @@ wybor_wykresu = ttk.Combobox(
         "Porównanie grup pacjentów"
     ],
     state="readonly",
-    width=24
+    width=22
 )
 wybor_wykresu.set("Wiek a ból")
-wybor_wykresu.pack(side="left", padx=4)
+wybor_wykresu.pack(side="left", padx=3)
 
 # 2. Odcinek kręgosłupa
 etykieta_grupa = ttk.Label(ramka_gorna, text="Odcinek:")
-etykieta_grupa.pack(side="left", padx=(8, 2))
+etykieta_grupa.pack(side="left", padx=(6, 2))
 wybor_grupy = ttk.Combobox(
     ramka_gorna,
     values=["Wszyscy", "szyjny", "piersiowy", "lędźwiowy"],
     state="readonly",
-    width=9
+    width=8
 )
 wybor_grupy.set("Wszyscy")
-wybor_grupy.pack(side="left", padx=4)
+wybor_grupy.pack(side="left", padx=3)
 
 # 3. Wybór widoku (Wykres / Tabela)
 etykieta_widok = ttk.Label(ramka_gorna, text="Widok:")
-etykieta_widok.pack(side="left", padx=(8, 2))
+etykieta_widok.pack(side="left", padx=(6, 2))
 wybor_widoku = ttk.Combobox(
     ramka_gorna,
     values=["Wykres", "Tabela"],
     state="readonly",
-    width=8
+    width=7
 )
 wybor_widoku.set("Wykres")
-wybor_widoku.pack(side="left", padx=4)
+wybor_widoku.pack(side="left", padx=3)
 
 # 4. Aktywność fizyczna
 etykieta_cwiczenia = ttk.Label(ramka_gorna, text="Aktywność:")
-etykieta_cwiczenia.pack(side="left", padx=(8, 2))
-wybor_cwiczen = ttk.Combobox(ramka_gorna, values=["Wszyscy", "Tak", "Nie"], state="readonly", width=7)
+etykieta_cwiczenia.pack(side="left", padx=(6, 2))
+wybor_cwiczen = ttk.Combobox(ramka_gorna, values=["Wszyscy", "Tak", "Nie"], state="readonly", width=6)
 wybor_cwiczen.set("Wszyscy")
-wybor_cwiczen.pack(side="left", padx=4)
+wybor_cwiczen.pack(side="left", padx=3)
 
 # 5. Praca siedząca
 etykieta_styl = ttk.Label(ramka_gorna, text="Praca siedząca:")
-etykieta_styl.pack(side="left", padx=(8, 2))
-wybor_stylu = ttk.Combobox(ramka_gorna, values=["Wszyscy", "Tak", "Nie"], state="readonly", width=7)
+etykieta_styl.pack(side="left", padx=(6, 2))
+wybor_stylu = ttk.Combobox(ramka_gorna, values=["Wszyscy", "Tak", "Nie"], state="readonly", width=6)
 wybor_stylu.set("Wszyscy")
-wybor_stylu.pack(side="left", padx=4)
+wybor_stylu.pack(side="left", padx=3)
 
 # 6. Pole wyszukiwania tekstowego / numerycznego
 etykieta_szukaj = ttk.Label(ramka_gorna, text="Szukaj:")
-etykieta_szukaj.pack(side="left", padx=(8, 2))
-wejscie_szukaj = ttk.Entry(ramka_gorna, width=12)
-wejscie_szukaj.pack(side="left", padx=4)
+etykieta_szukaj.pack(side="left", padx=(6, 2))
+wejscie_szukaj = ttk.Entry(ramka_gorna, width=10)
+wejscie_szukaj.pack(side="left", padx=3)
 
 # --- 3. ŚRODKOWA CZĘŚĆ (WYKRES / TABELA) ---
 ramka_srodek = ttk.Frame(okno, padding="10")
