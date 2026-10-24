@@ -14,17 +14,17 @@ except FileNotFoundError:
 # Stworzenie głównego okna aplikacji
 okno = tk.Tk()
 okno.title("Analiza pacjentów z bólem pleców")
-okno.geometry("1250x800")
+okno.geometry("1280x800")
 
 # Konfiguracja nowoczesnego stylu interfejsu
 styl = ttk.Style()
 styl.theme_use('clam')
 
-# --- 1. DOLNY PANEL STATYSTYCZNY (PAKOWANY NA SAMym DOLE) ---
+# --- 1. DOLNY PANEL STATYSTYCZNY (NA SAMYM DOLE) ---
 ramka_dolna = ttk.LabelFrame(okno, text="Podsumowanie statystyczne i jakość danych", padding="10")
 ramka_dolna.pack(side="bottom", fill="x", padx=10, pady=10)
 
-# Górny rząd statystyk
+# Górny rząd statystyk (Wiek)
 gorna_stat_ramka = ttk.Frame(ramka_dolna)
 gorna_stat_ramka.pack(fill="x", pady=2)
 
@@ -37,7 +37,7 @@ etykieta_sredni_wiek.pack(side="left", padx=10)
 etykieta_mediana_wieku = ttk.Label(gorna_stat_ramka, text="Mediana wieku: -", font=("Arial", 10))
 etykieta_mediana_wieku.pack(side="left", padx=10)
 
-# Dolny rząd statystyk + Przyciski akcji na dole po prawej
+# Dolny rząd statystyk (Ból) + Przyciski akcji po prawej stronie
 dolna_stat_ramka = ttk.Frame(ramka_dolna)
 dolna_stat_ramka.pack(fill="x", pady=(5, 2))
 
@@ -53,7 +53,7 @@ etykieta_std_bol.pack(side="left", padx=10)
 etykieta_min_max_bol = ttk.Label(dolna_stat_ramka, text="Min / Max ból: -", font=("Arial", 10))
 etykieta_min_max_bol.pack(side="left", padx=10)
 
-# Przyciski akcji umieszczone na dole po prawej stronie panelu statystyk
+# Ramka na przyciski Jakość danych i Eksport CSV w dolnym panelu po prawej stronie
 ramka_przyciski_dol = ttk.Frame(dolna_stat_ramka)
 ramka_przyciski_dol.pack(side="right", padx=5)
 
@@ -101,11 +101,11 @@ def eksportuj_csv():
             messagebox.showerror("Błąd zapisu", f"Nie udało się zapisać pliku:\n{blad}")
 
 
-przycisk_jakosc = ttk.Button(ramka_przyciski_dol, text="🔍 Jakość danych", command=pokaz_jakosc_danych, width=15)
-przycisk_jakosc.pack(side="right", padx=5)
-
 przycisk_eksport = ttk.Button(ramka_przyciski_dol, text="💾 Eksport CSV", command=eksportuj_csv, width=14)
 przycisk_eksport.pack(side="right", padx=5)
+
+przycisk_jakosc = ttk.Button(ramka_przyciski_dol, text="🔍 Jakość danych", command=pokaz_jakosc_danych, width=15)
+przycisk_jakosc.pack(side="right", padx=5)
 
 etykieta_status = ttk.Label(ramka_dolna, text="Status: Gotowy do pracy", font=("Arial", 9, "italic"))
 etykieta_status.pack(anchor="w", padx=10, pady=(5, 0))
@@ -136,7 +136,8 @@ wybor_wykresu = ttk.Combobox(
         "Płeć a ból",
         "Histogram poziomu bólu",
         "Wykres rozrzutu (Wiek vs Ból)",
-        "Aktywność fizyczna a ból"
+        "Aktywność fizyczna a ból",
+        "Porównanie grup pacjentów"
     ],
     state="readonly",
     width=26
@@ -182,7 +183,7 @@ wybor_stylu = ttk.Combobox(ramka_gorna, values=["Wszyscy", "Tak", "Nie"], state=
 wybor_stylu.set("Wszyscy")
 wybor_stylu.pack(side="left", padx=5)
 
-# Przycisk resetowania filtrów po prawej stronie
+# Przycisk resetowania filtrów po prawej stronie w górnej ramce
 przycisk_reset = ttk.Button(ramka_gorna, text="🔄 Resetuj filtry", command=resetuj_filtry, width=15)
 przycisk_reset.pack(side="right", padx=5)
 
@@ -339,6 +340,43 @@ def rysuj_wykres(event=None):
             ax.set_xlabel("Regularne ćwiczenia fizyczne")
             ax.set_ylabel("Średnia skala bólu (1-10)")
             ax.grid(axis='y', linestyle='--', alpha=0.6)
+        else:
+            ax.text(0.5, 0.5, "Brak danych dla wybranego filtra", ha='center', va='center', transform=ax.transAxes)
+
+    elif typ == "Porównanie grup pacjentów":
+        srednie_cw = dane_f.groupby('Regularne_cwiczenia')['Skala_Bolu_1_10'].mean()
+        srednie_pr = dane_f.groupby('Praca_siedzaca')['Skala_Bolu_1_10'].mean()
+
+        kategorie = []
+        wartosci = []
+        kolory = []
+
+        if 'Tak' in srednie_cw.index:
+            kategorie.append('Ćwiczenia: Tak')
+            wartosci.append(srednie_cw['Tak'])
+            kolory.append('#27ae60')
+        if 'Nie' in srednie_cw.index:
+            kategorie.append('Ćwiczenia: Nie')
+            wartosci.append(srednie_cw['Nie'])
+            kolory.append('#e74c3c')
+        if 'Tak' in srednie_pr.index:
+            kategorie.append('Praca siedząca: Tak')
+            wartosci.append(srednie_pr['Tak'])
+            kolory.append('#e67e22')
+        if 'Nie' in srednie_pr.index:
+            kategorie.append('Praca siedząca: Nie')
+            wartosci.append(srednie_pr['Nie'])
+            kolory.append('#3498db')
+
+        if kategorie:
+            slupki = ax.bar(kategorie, wartosci, color=kolory, edgecolor='black', alpha=0.85)
+            ax.bar_label(slupki, fmt='%.2f', padding=3)
+            ax.set_title("Porównanie poziomu bólu w zależności od stylu życia")
+            ax.set_xlabel("Czynnik stylu życia")
+            ax.set_ylabel("Średnia skala bólu (1-10)")
+            ax.set_ylim(0, 10)
+            ax.grid(axis='y', linestyle='--', alpha=0.6)
+            plt.setp(ax.get_xticklabels(), rotation=15, ha='right')
         else:
             ax.text(0.5, 0.5, "Brak danych dla wybranego filtra", ha='center', va='center', transform=ax.transAxes)
 
