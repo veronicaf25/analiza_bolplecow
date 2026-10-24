@@ -14,7 +14,7 @@ except FileNotFoundError:
 # Stworzenie głównego okna aplikacji
 okno = tk.Tk()
 okno.title("Analiza pacjentów z bólem pleców")
-okno.geometry("1280x800")
+okno.geometry("1380x800")
 
 # Konfiguracja nowoczesnego stylu interfejsu
 styl = ttk.Style()
@@ -110,7 +110,7 @@ przycisk_jakosc.pack(side="right", padx=5)
 etykieta_status = ttk.Label(ramka_dolna, text="Status: Gotowy do pracy", font=("Arial", 9, "italic"))
 etykieta_status.pack(anchor="w", padx=10, pady=(5, 0))
 
-# --- 2. GÓRNA RAMKA (FILTRY) ---
+# --- 2. GÓRNA RAMKA (FILTRY I WYSZUKIWARKA) ---
 ramka_gorna = ttk.Frame(okno, padding="10")
 ramka_gorna.pack(side="top", fill="x", padx=10, pady=10)
 
@@ -121,10 +121,37 @@ def resetuj_filtry():
     wybor_stylu.set("Wszyscy")
     wybor_wykresu.set("Wiek a ból")
     wybor_widoku.set("Wykres")
+    wejscie_szukaj.delete(0, tk.END)
     zmien_widok()
     rysuj_wykres()
     etykieta_status.config(text="Status: Zresetowano filtry")
 
+
+def zapisz_wykres():
+    if wybor_widoku.get() != "Wykres":
+        messagebox.showinfo("Informacja", "Przełącz widok na 'Wykres', aby zapisać aktualną wizualizację.")
+        return
+
+    sciezka = filedialog.asksaveasfilename(
+        title="Zapisz wykres jako",
+        defaultextension=".png",
+        filetypes=[("Plik PNG", "*.png"), ("Plik PDF", "*.pdf"), ("Wszystkie pliki", "*.*")]
+    )
+    if sciezka:
+        try:
+            fig.savefig(sciezka, dpi=300, bbox_inches='tight')
+            etykieta_status.config(text="Status: Zapisano wykres")
+            messagebox.showinfo("Sukces", "Wykres został pomyślnie zapisany!")
+        except Exception as e:
+            messagebox.showerror("Błąd", f"Nie udało się zapisać wykresu:\n{e}")
+
+
+# Przyciski po prawej stronie w górnej ramce (Reset i Zapisz wykres)
+przycisk_reset = ttk.Button(ramka_gorna, text="🔄 Reset", command=resetuj_filtry, width=9)
+przycisk_reset.pack(side="right", padx=5)
+
+przycisk_zapisz = ttk.Button(ramka_gorna, text="📸 Zapisz wykres", command=zapisz_wykres, width=15)
+przycisk_zapisz.pack(side="right", padx=5)
 
 # 1. Wybór typu wykresu
 etykieta_wykres = ttk.Label(ramka_gorna, text="Wykres:")
@@ -140,52 +167,54 @@ wybor_wykresu = ttk.Combobox(
         "Porównanie grup pacjentów"
     ],
     state="readonly",
-    width=26
+    width=24
 )
 wybor_wykresu.set("Wiek a ból")
-wybor_wykresu.pack(side="left", padx=5)
+wybor_wykresu.pack(side="left", padx=4)
 
 # 2. Odcinek kręgosłupa
 etykieta_grupa = ttk.Label(ramka_gorna, text="Odcinek:")
-etykieta_grupa.pack(side="left", padx=(10, 2))
+etykieta_grupa.pack(side="left", padx=(8, 2))
 wybor_grupy = ttk.Combobox(
     ramka_gorna,
     values=["Wszyscy", "szyjny", "piersiowy", "lędźwiowy"],
     state="readonly",
-    width=10
+    width=9
 )
 wybor_grupy.set("Wszyscy")
-wybor_grupy.pack(side="left", padx=5)
+wybor_grupy.pack(side="left", padx=4)
 
 # 3. Wybór widoku (Wykres / Tabela)
 etykieta_widok = ttk.Label(ramka_gorna, text="Widok:")
-etykieta_widok.pack(side="left", padx=(10, 2))
+etykieta_widok.pack(side="left", padx=(8, 2))
 wybor_widoku = ttk.Combobox(
     ramka_gorna,
     values=["Wykres", "Tabela"],
     state="readonly",
-    width=9
+    width=8
 )
 wybor_widoku.set("Wykres")
-wybor_widoku.pack(side="left", padx=5)
+wybor_widoku.pack(side="left", padx=4)
 
 # 4. Aktywność fizyczna
 etykieta_cwiczenia = ttk.Label(ramka_gorna, text="Aktywność:")
-etykieta_cwiczenia.pack(side="left", padx=(10, 2))
-wybor_cwiczen = ttk.Combobox(ramka_gorna, values=["Wszyscy", "Tak", "Nie"], state="readonly", width=8)
+etykieta_cwiczenia.pack(side="left", padx=(8, 2))
+wybor_cwiczen = ttk.Combobox(ramka_gorna, values=["Wszyscy", "Tak", "Nie"], state="readonly", width=7)
 wybor_cwiczen.set("Wszyscy")
-wybor_cwiczen.pack(side="left", padx=5)
+wybor_cwiczen.pack(side="left", padx=4)
 
 # 5. Praca siedząca
 etykieta_styl = ttk.Label(ramka_gorna, text="Praca siedząca:")
-etykieta_styl.pack(side="left", padx=(10, 2))
-wybor_stylu = ttk.Combobox(ramka_gorna, values=["Wszyscy", "Tak", "Nie"], state="readonly", width=8)
+etykieta_styl.pack(side="left", padx=(8, 2))
+wybor_stylu = ttk.Combobox(ramka_gorna, values=["Wszyscy", "Tak", "Nie"], state="readonly", width=7)
 wybor_stylu.set("Wszyscy")
-wybor_stylu.pack(side="left", padx=5)
+wybor_stylu.pack(side="left", padx=4)
 
-# Przycisk resetowania filtrów po prawej stronie w górnej ramce
-przycisk_reset = ttk.Button(ramka_gorna, text="🔄 Resetuj filtry", command=resetuj_filtry, width=15)
-przycisk_reset.pack(side="right", padx=5)
+# 6. Pole wyszukiwania tekstowego / numerycznego
+etykieta_szukaj = ttk.Label(ramka_gorna, text="Szukaj:")
+etykieta_szukaj.pack(side="left", padx=(8, 2))
+wejscie_szukaj = ttk.Entry(ramka_gorna, width=12)
+wejscie_szukaj.pack(side="left", padx=4)
 
 # --- 3. ŚRODKOWA CZĘŚĆ (WYKRES / TABELA) ---
 ramka_srodek = ttk.Frame(okno, padding="10")
@@ -228,6 +257,7 @@ def pobierz_filtrowane_dane():
     grupa = wybor_grupy.get()
     aktywnosc = wybor_cwiczen.get()
     styl_pracy = wybor_stylu.get()
+    szukany_tekst = wejscie_szukaj.get().strip().lower()
 
     if grupa != "Wszyscy":
         dane_f = dane_f[dane_f['Odcinek'].astype(str).str.strip().str.lower() == grupa.lower()]
@@ -237,6 +267,10 @@ def pobierz_filtrowane_dane():
 
     if styl_pracy != "Wszyscy":
         dane_f = dane_f[dane_f['Praca_siedzaca'].astype(str).str.strip().str.lower() == styl_pracy.lower()]
+
+    if szukany_tekst:
+        maska = dane_f.astype(str).apply(lambda col: col.str.lower().str.contains(szukany_tekst, na=False)).any(axis=1)
+        dane_f = dane_f[maska]
 
     return dane_f
 
@@ -370,7 +404,6 @@ def rysuj_wykres(event=None):
 
         if kategorie:
             slupki = ax.bar(kategorie, wartosci, color=kolory, edgecolor='black', alpha=0.85)
-            ax.bar_label(slupki, fmt='%.2f', padding=3)
             ax.set_title("Porównanie poziomu bólu w zależności od stylu życia")
             ax.set_xlabel("Czynnik stylu życia")
             ax.set_ylabel("Średnia skala bólu (1-10)")
@@ -403,6 +436,7 @@ wybor_grupy.bind("<<ComboboxSelected>>", rysuj_wykres)
 wybor_widoku.bind("<<ComboboxSelected>>", zmien_widok)
 wybor_cwiczen.bind("<<ComboboxSelected>>", rysuj_wykres)
 wybor_stylu.bind("<<ComboboxSelected>>", rysuj_wykres)
+wejscie_szukaj.bind("<KeyRelease>", rysuj_wykres)
 
 
 def zamknij_aplikacje():
