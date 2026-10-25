@@ -1,4 +1,4 @@
-Specyfikacja Techniczna i Funkcjonalna Aplikacji: Analiza Bólu Pleców
+# Specyfikacja Techniczna i Funkcjonalna Aplikacji: Analiza Bólu Pleców
 
 ## 1. Cel i Przeznaczenie Aplikacji
 Aplikacja jest systemem desktopowym stworzonym w języku Python, służącym do gromadzenia, zarządzania oraz analitycznego przeglądu danych medycznych pacjentów skarżących się na bóle pleców. Narzędzie ma na celu ułatwienie pracy specjalistom (np. fizjoterapeutom) poprzez automatyzację obliczeń statystycznych oraz wizualizację kluczowych parametrów zdrowotnych.
@@ -18,8 +18,11 @@ Interfejs graficzny został zaprojektowany z wykorzystaniem biblioteki **Tkinter
 * **Filtrowanie i wyszukiwanie:** Użytkownik ma możliwość filtrowania danych według parametrów bólowych, wieku oraz wskaźników klinicznych w czasie rzeczywistym.
 * **Automatyczne raportowanie:** Moduł analityczny na bieżąco oblicza podstawowe statystyki opisowe (średnie, mediana, odchylenia) oraz generuje automatyczne wnioski tekstowe opisujące badaną grupę.
 
+---
+
+## 4. Wymagania Techniczne i Zależności (`requirements.txt`)
 Projekt wymaga zainstalowanego środowiska Python 3.x oraz następujących bibliotek zewnętrznych:
 * `pandas` – do operacji na ramkach danych i analizy statystycznej,
-* `matplotlib` – do generowania wykresów medycznych i anality
+* `matplotlib` – do generowania wykresów medycznych i analitycznych,
 * `tkinter` (wbudowane w standardową bibliotekę Pythona) – do obsługi interfejsu graficznego,
 * `sqlite3` – do obsługi bazy danych.
