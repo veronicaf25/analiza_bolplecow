@@ -19,10 +19,5 @@ Interfejs graficzny został zaprojektowany z wykorzystaniem biblioteki **Tkinter
 * **Automatyczne raportowanie:** Moduł analityczny na bieżąco oblicza podstawowe statystyki opisowe (średnie, mediana, odchylenia) oraz generuje automatyczne wnioski tekstowe opisujące badaną grupę.
 
 ---
-
-## 4. Wymagania Techniczne i Zależności (`requirements.txt`)
-Projekt wymaga zainstalowanego środowiska Python 3.x oraz następujących bibliotek zewnętrznych:
-* `pandas` – do operacji na ramkach danych i analizy statystycznej,
-* `matplotlib` – do generowania wykresów medycznych i analitycznych,
 * `tkinter` (wbudowane w standardową bibliotekę Pythona) – do obsługi interfejsu graficznego,
 * `sqlite3` – do obsługi bazy danych.
