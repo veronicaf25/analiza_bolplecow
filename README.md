@@ -45,7 +45,7 @@ python gui/aplikacja.py
 Przy pierwszym uruchomieniu program spróbuje odczytać dane z bazy SQLite. Jeśli nie będzie to możliwe, podejmie próbę utworzenia bazy na podstawie pliku CSV.
 
 
-Informacja o wykorzystaniu AI
+4. Informacja o wykorzystaniu AI
 Podczas realizacji projektu korzystałam z ChatGPT jako narzędzia wspierającego naukę programowania.
 AI pomagało mi w:
 * wyjaśnianiu działania kodu w Pythonie;
