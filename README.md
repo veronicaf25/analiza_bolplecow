@@ -5,8 +5,9 @@ Projekt polega na stworzeniu aplikacji desktopowej w języku Python, która umo�
 Aplikacja pozwala analizować poziom bólu w zależności od wieku, płci, aktywności fizycznej, wykonywania pracy siedzącej oraz odcinka kręgosłupa. Wyniki są przedstawiane w formie wykresów, tabel i statystyk opisowych.
 Do stworzenia aplikacji wykorzystano biblioteki Pandas, Matplotlib i Tkinter oraz bazę danych SQLite.
 
-2. Lista funkcji aplikacji
 
+
+3. Lista funkcji aplikacji
 Aplikacja oferuje następujące funkcjonalności:
 * Wizualizacja danych - sześć rodzajów wykresów przedstawiających zależności między poziomem bólu a wybranymi cechami pacjentów.
 * Filtrowanie danych - wybór odcinka kręgosłupa, aktywności fizycznej i wykonywania pracy siedzącej.
@@ -20,8 +21,9 @@ Aplikacja oferuje następujące funkcjonalności:
 * Zapisywanie wykresów - eksport aktualnego wykresu do pliku PNG lub PDF.
 * Kontrola jakości danych - sprawdzanie brakujących wartości i podstawowych zakresów logicznych.
 
-3. Instrukcja instalacji i uruchomienia
+  
 
+3. Instrukcja instalacji i uruchomienia
 Do uruchomienia aplikacji potrzebne są:
 * Python 3.10 lub nowszy;
 * biblioteki Pandas i Matplotlib;
@@ -45,8 +47,9 @@ python gui/aplikacja.py
 Przy pierwszym uruchomieniu program spróbuje odczytać dane z bazy SQLite. Jeśli nie będzie to możliwe, podejmie próbę utworzenia bazy na podstawie pliku CSV.
 
 
+
 4. Informacja o wykorzystaniu AI
-Podczas realizacji projektu korzystałam z ChatGPT jako narzędzia wspierającego naukę programowania.
+5. Podczas realizacji projektu korzystałam z ChatGPT jako narzędzia wspierającego naukę programowania.
 AI pomagało mi w:
 * wyjaśnianiu działania kodu w Pythonie;
 * analizowaniu i poprawianiu potencjalnych błędów;
