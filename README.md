@@ -49,11 +49,11 @@ Przy pierwszym uruchomieniu program spróbuje odczytać dane z bazy SQLite. Jeś
 
 
 4. Informacja o wykorzystaniu AI
-Podczas realizacji projektu korzystałam z ChatGPT jako narzędzia wspierającego naukę programowania.
+Podczas realizacji projektu korzystałam z ChatGPT oraz Gemini jako narzędzia wspierającego naukę programowania.
 AI pomagało mi w:
 * wyjaśnianiu działania kodu w Pythonie;
 * analizowaniu i poprawianiu potencjalnych błędów;
-* rozwijaniu funkcjonalności aplikacji, takich jak filtrowanie danych, statystyki i wizualizacja;
+* rozwijaniu funkcjonalności aplikacji, takich jak np. filtrowanie danych, statystyki i wizualizacja;
 * zrozumieniu obsługi bazy danych SQLite;
 * przygotowaniu dokumentacji projektu.
 
